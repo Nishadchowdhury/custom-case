@@ -57,3 +57,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+::selection {
+  background: rgb(7, 199, 7);
+  color: rgb(255, 255, 255);
+}
+*{
+  transition: all 1000;
+}

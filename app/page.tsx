@@ -3,8 +3,10 @@ import { Icons } from "@/components/custom/Icons";
 import MaxWidthWrapper from "@/components/custom/MaxWidthWrapper";
 import Phone from "@/components/custom/Phone";
 import Reviews from "@/components/custom/Reviews";
-import { Check, Star } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { ArrowRight, Check, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -19,7 +21,6 @@ export default function Home() {
 
             <div className="relative mx-auto text-center lg:text-left flex flex-col items-center lg:items-start">
               <div className="absolute w-28 left-0 -top-20 hidden lg:block">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/snake-1.png" className="w-full" alt="" />
               </div>
 
@@ -31,11 +32,7 @@ export default function Home() {
               <p className="mt-8 text-lg lg:pr-10 max-w-prose text-center lg:text-left text-balance md:text-wrap">
                 Capture your favorite memories with your own,
 
-                <span
-                  className="font-semibold"
-                >
-                  {" "}one-of-one
-                </span> phone case.
+                <span className="font-semibold" >one-of-one </span> phone case.
 
                 CaseCobra allows you to protect your memories, not just your phone case.
               </p>
@@ -126,6 +123,7 @@ export default function Home() {
                 imgSrc="/testimonials/1.jpg"
               />
 
+
             </div>
 
           </div>
@@ -141,7 +139,7 @@ export default function Home() {
             <h2
               className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl text-gray-900 "
             >
-              What out
+              What our
               <span className="relative px-2 text-green-600" >
                 customers <Icons.underline className="hidden sm:block pointer-events-none absolute inset-x-0 -bottom-6 text-green-500" />
               </span>
@@ -242,6 +240,75 @@ export default function Home() {
           <Reviews />
         </div>
 
+      </section>
+
+      <section >
+        <MaxWidthWrapper className="py-24">
+          <div className="mb-12 px-6 lg:px-8">
+            <div className="mx-auto max-w-2xl sm:text-center ">
+
+              <h2
+                className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl text-gray-900 "
+              >
+                Upload your photo and get <span className="relative px-2 mx-2 bg-green-600 text-white" > your own case </span> now
+              </h2>
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-6xl px-6 lg:px-8 ">
+            <div className="relative flex flex-col items-center md:grid grid-cols-2 gap-40">
+              {/* abs img */}
+              <img
+                src="/arrow.png"
+                alt=""
+                className="absolute top-[25rem] md:top-1/2 -translate-y-1/2 z-10 left-1/2 -translate-x-1/2 rotate-90 md:rotate-0"
+              />
+              {/* abs img */}
+
+              <div className="relative h-80 md:h-full w-full md:justify-self-end max-w-sm rounded-xl bg-gray-900/5 ring-inset ring-gray-900/5 lg:rounded-2xl   " >
+                <img
+                  src="/horse.jpg"
+                  alt=""
+                  className="rounded-md object-cover bg-white shadow-2xl ring-1 ring-gray-900/10 h-full w-full "
+                />
+              </div>
+
+              <Phone className="w-60 " imgSrc="/horse_phone.jpg" />
+            </div>
+          </div>
+
+          {/* max-w-prose =  max-w:65c => 65characters maximum it is used for texts. */}
+          <ul className="mx-auto mt-12 max-w-prose sm:text-lg space-y-2 w-fit " >
+            <li>
+              <Check className="h-5 w-5 text-green-600 inline mr-1.5 " />
+              High-quality silicon material
+            </li>
+            <li>
+              <Check className="h-5 w-5 text-green-600 inline mr-1.5 " />
+              Scratch and fingerprint resistant coating
+            </li>
+            <li>
+              <Check className="h-5 w-5 text-green-600 inline mr-1.5 " />
+              Wireless charging compatible
+            </li>
+            <li>
+              <Check className="h-5 w-5 text-green-600 inline mr-1.5 " />
+              5 years print warranty
+            </li>
+
+            <div className="flex justify-center ">
+              <Link className={buttonVariants({
+                size: "lg",
+                className: "mx-auto mt-8 "
+              })} href={"/configure/upload"}>
+                create your case now <ArrowRight className="size-4 ml-1.5 " />
+              </Link>
+
+            </div>
+
+          </ul>
+
+        </MaxWidthWrapper>
       </section>
 
     </div>

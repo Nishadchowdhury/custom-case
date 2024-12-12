@@ -11,7 +11,7 @@ interface pageProps {
 const Navbar: React.FC<pageProps> = async () => {
 
 
-    const { getUser } = getKindeServerSession()
+    const { getUser } = getKindeServerSession() // getting the user
 
     const user = await getUser();
     const isAdmin = user?.email === process.env.ADMIN_EMAIL;
@@ -49,7 +49,7 @@ const Navbar: React.FC<pageProps> = async () => {
                                         Dashboard ✨
                                     </Link> : null
                                 }
-
+                                <div className="h-8 w-px bg-zinc-200 hidden sm:block " />
                                 <Link href={"/configure/upload"}
                                     className={buttonVariants({
                                         size: "sm",
