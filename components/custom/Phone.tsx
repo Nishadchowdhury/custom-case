@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { HTMLAttributes } from "react";
 
-interface pageProps extends HTMLAttributes<HTMLDivElement> {
+interface pageProps extends HTMLAttributes<HTMLDivElement> /*This will suggest all HTML div attribute to the custom component when we import it to other component. */ {
     imgSrc: string;
     dark?: boolean;
 }
@@ -24,7 +24,7 @@ const Phone: React.FC<pageProps> = ({ className, imgSrc, dark = false, ...props 
             >
 
                 <img
-                    className="object-cover"
+                    className="object-cover select-none"
                     src={imgSrc}
                     alt="overlay phone image"
 
