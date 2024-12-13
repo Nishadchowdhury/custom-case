@@ -3,6 +3,7 @@ import { Icons } from "@/components/custom/Icons";
 import MaxWidthWrapper from "@/components/custom/MaxWidthWrapper";
 import Phone from "@/components/custom/Phone";
 import Reviews from "@/components/custom/Reviews";
+import Reviews2 from "@/components/custom/Reviews2";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, Check, Star } from "lucide-react";
 import Image from "next/image";
@@ -238,10 +239,13 @@ export default function Home() {
 
         <div className="pt-16">
           <Reviews />
+          {/* <Reviews2 /> */}
         </div>
 
       </section>
 
+
+      {/* _______________________________________________footer________________________________________________ */}
       <section >
         <MaxWidthWrapper className="py-24">
           <div className="mb-12 px-6 lg:px-8">

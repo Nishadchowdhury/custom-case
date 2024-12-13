@@ -37,7 +37,7 @@ function splitArray<T>(array: Array<T>, numParts: number) {
 /////////////////////////////////////////////////////////////////// eslint-disable-next-line @next/next/no-img-element
 const Reviews: React.FC = () => {
     return (
-        <MaxWidthWrapper className="relative">
+        <MaxWidthWrapper className="relative max-w-5xl">
             <img
                 className="absolute select-none hidden xl:block -left-32 top-1/3"
                 src="/what-people-are-buying.png"
@@ -66,6 +66,7 @@ function ReviewGrid() {
         amount: 0.2,
     })
 
+    // now we need to split the array of the phone's picture into three different arrays. 
     const columns = splitArray(PHONES, 3)
     const column1 = columns[0]
     const column2 = columns[1]
