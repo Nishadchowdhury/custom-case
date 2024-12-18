@@ -1,6 +1,7 @@
 "use client"
 
 import { Progress } from '@/components/ui/progress'
+import { useUploadThing } from '@/lib/uploadthing'
 import { cn } from '@/lib/utils'
 import { Image, Loader2, MousePointer, MousePointerSquareDashed } from 'lucide-react'
 import React, { useState, useTransition } from 'react'
@@ -11,6 +12,12 @@ import Dropzone, { FileRejection } from 'react-dropzone'
 export default function Page() {
     const [isDragOver, setIsDragOver] = useState<boolean>(false)
     const [uploadProgress, setUploadProgress] = useState<number>(0)
+
+    const { } = useUploadThing("imageUploader", {
+        onClientUploadComplete: ([data]) => {
+
+        }
+    })
 
     const onDropRejected = () => {
         console.log("onDropRejected");
@@ -80,7 +87,7 @@ export default function Page() {
                                     }
                                 </div>
 
-                                {isPending? null : <p className='text-xs text-zinc-500'>
+                                {isPending ? null : <p className='text-xs text-zinc-500'>
                                     PNG, JPG, JPEG </p>}
                             </div>
                         )
