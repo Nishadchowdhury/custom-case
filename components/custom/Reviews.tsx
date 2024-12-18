@@ -82,14 +82,18 @@ function ReviewGrid() {
             <>
                 <ReviewColumn
                     reviews={[...column1, ...column3.flat(), ...column2]}
-                    reviewClassName={(reviewIndex) => cn({ 'md:hidden': reviewIndex >= column1.length + column3[0].length, 'lg:hidden': reviewIndex >= column1.length })}
-
+                    reviewClassName={(reviewIndex) => cn({  //Dynamic logic to hide certain reviews based on the reviewIndex and screen size using reviewClassName.
+                        'md:hidden': reviewIndex >= column1.length + column3[0].length,
+                        'lg:hidden': reviewIndex >= column1.length
+                    })
+                    }
+                    className=""
                     mxPerPixels={10}
                 />
 
                 <ReviewColumn
                     reviews={[...column2, ...column3[1]]}
-                    className="hidden md:block"
+                    className="hidden md:block "
                     reviewClassName={(reviewIndex) => reviewIndex >= column2.length
                         ? 'lg:hidden' : ""}
 
@@ -97,14 +101,12 @@ function ReviewGrid() {
                 />
 
                 <ReviewColumn
-
-                    className="hidden md:block"
+                    className="hidden md:block "
                     reviews={[...column3.flat()]}
-                    // reviewClassName={(reviewIndex) => cn({
-                    //     'md:hidden': reviewIndex >= column1.length + column3[0].length,
-                    //     'lg:hidden': reviewIndex >= column1.length
-                    // })}
-
+                    reviewClassName={(reviewIndex) => cn({
+                        'md:hidden': reviewIndex >= column1.length + column3[0].length,
+                        'lg:hidden': reviewIndex >= column1.length
+                    })}
                     mxPerPixels={8}
                 />
 
@@ -121,8 +123,6 @@ function ReviewGrid() {
 }
 
 
-
-
 ///////////////////////////////////////////////////////////////// 
 function ReviewColumn({ reviews, className, reviewClassName, mxPerPixels }: { reviews: string[], className?: string, reviewClassName?: (reviewIndex: number) => string, mxPerPixels: number, }) {
 
@@ -132,18 +132,13 @@ function ReviewColumn({ reviews, className, reviewClassName, mxPerPixels }: { re
 
     useEffect(() => {
         if (!columnRef.current) return
-
-
         const resizeObserver = new window.ResizeObserver(() => {
             setColumnHeight(columnRef.current?.offsetHeight ?? 0)
         })
-
         resizeObserver.observe(columnRef.current)
-
         return () => {
             resizeObserver.disconnect()
         }
-
     }, [])
 
     return (

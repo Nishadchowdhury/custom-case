@@ -1,3 +1,28 @@
 * {
   /* @apply transition-all; */
 }
+
+/* Apply the animation to the element */
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration) linear infinite; /*dynamecally css value.*/
+}
+
+@keyframes marquee {
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s linear forwards;
+}
