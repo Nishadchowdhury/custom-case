@@ -1,33 +1,62 @@
 "use client"
 
 import { Progress } from '@/components/ui/progress'
+import { useToast } from '@/hooks/use-toast'
 import { useUploadThing } from '@/lib/uploadthing'
 import { cn } from '@/lib/utils'
-import { Image, Loader2, MousePointer, MousePointerSquareDashed } from 'lucide-react'
-import React, { useState, useTransition } from 'react'
+import { Image, Loader2, MousePointerSquareDashed } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
 import Dropzone, { FileRejection } from 'react-dropzone'
 
 
 
 export default function Page() {
+    const { toast } = useToast()
     const [isDragOver, setIsDragOver] = useState<boolean>(false)
     const [uploadProgress, setUploadProgress] = useState<number>(0)
+    const router = useRouter()
 
-    const { } = useUploadThing("imageUploader", {
+    // the hook we got from the react helper 
+    const { startUpload } = useUploadThing("imageUploader", {
         onClientUploadComplete: ([data]) => {
+            const configId = data.serverData?.uploadedBy?.input?.configId;
 
+            startTransition(() => {
+                router.push(`/configure/design?id=${undefined}`);
+            })
+
+        },
+        onUploadProgress(p) {
+            setUploadProgress(p) // setting the upload process progress
+        },
+        onUploadError: (e)=> {
+            console.log(e.message);
         }
     })
 
-    const onDropRejected = () => {
-        console.log("onDropRejected");
+    const onDropRejected = (rejectedFiles: FileRejection[]) => {
+        const [file] = rejectedFiles;
+
+        toast({
+            title: `${file.file.type} type is not supported.`,
+            description: `Please upload a valid image file (png, jpg, jpeg).`,
+            variant: "destructive"
+
+        })
+
+        setIsDragOver(false)
     }
-    const onDropAccepted = () => {
-        console.log("onDropAccepted");
+    const onDropAccepted = (acceptedFiles: File[]) => {
+        startUpload([...acceptedFiles], { configId: undefined })
+
+
+        setIsDragOver(false)
     }
 
+
     const isUploading = false;
-    const [isPending, startTransitionF] = useTransition();
+    const [isPending, startTransition] = useTransition();
 
     return (
         <div className={cn('relative h-full flex-1 my-16 w-full rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl flex justify-center flex-col items-center', {

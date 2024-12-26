@@ -1,34 +1,22 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+import { z } from "zod";
 
 const f = createUploadthing();
 
 const auth = (req: Request) => ({ id: "fakeId" });
 
 export const ourFileRouter = {
-  imageUploader: f({
-    image: {
-      /**
-       * For full list of options and defaults, see the File Route API reference
-       * @see https
-       */
-      maxFileSize: "4MB",
-      maxFileCount: 1,
-    },
-  })
-    .middleware(async ({ req }) => {
-      const user = await auth(req);
+  imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
 
-      if (!user) throw new UploadThingError("Unauthorized");
+    .input(z.object({ configId: z.string().optional() }))
 
-      return { userId: user.id };
+    .middleware(async ({ input }) => {
+      return { input };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for userId:", metadata.userId);
+      const configId = metadata.input;
 
-      console.log("file url", file.url);
-
-      return { uploadedBy: metadata.userId };
+      return { uploadedBy: metadata };
     }),
 } satisfies FileRouter;
 
