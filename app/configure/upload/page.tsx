@@ -18,19 +18,20 @@ export default function Page() {
     const router = useRouter()
 
     // the hook we got from the react helper 
-    const { startUpload } = useUploadThing("imageUploader", {
+    const { startUpload, isUploading } = useUploadThing("imageUploader", {
         onClientUploadComplete: ([data]) => {
-            const configId = data.serverData?.uploadedBy?.input?.configId;
+            const configId = data.serverData?.configId;
 
             startTransition(() => {
-                router.push(`/configure/design?id=${undefined}`);
+                router.push(`/configure/design?id=${configId}`);
             })
 
         },
         onUploadProgress(p) {
+            console.log(p);
             setUploadProgress(p) // setting the upload process progress
         },
-        onUploadError: (e)=> {
+        onUploadError: (e) => {
             console.log(e.message);
         }
     })
@@ -55,7 +56,6 @@ export default function Page() {
     }
 
 
-    const isUploading = false;
     const [isPending, startTransition] = useTransition();
 
     return (
