@@ -1,7 +1,12 @@
 import { OurFileRouter } from "@/app/api/uploadthing/core";
-import { generateReactHelpers } from "@uploadthing/react";
+import {
+  generateReactHelpers,
+  generateUploadButton,
+} from "@uploadthing/react";
 
 export const { useUploadThing, uploadFiles } =
   generateReactHelpers<OurFileRouter>();
 
-  // 2:54:00
+export const UploadButton = generateUploadButton<OurFileRouter>();
+
+// 2:54:00

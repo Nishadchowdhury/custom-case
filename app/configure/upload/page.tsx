@@ -20,7 +20,7 @@ export default function Page() {
     // the hook we got from the react helper 
     const { startUpload, isUploading } = useUploadThing("imageUploader", {
         onClientUploadComplete: ([data]) => {
-            const configId = data.serverData?.configId;
+            const { configId, } = data.serverData;
 
             startTransition(() => {
                 router.push(`/configure/design?id=${configId}`);
@@ -49,13 +49,11 @@ export default function Page() {
         setIsDragOver(false)
     }
     const onDropAccepted = (acceptedFiles: File[]) => {
-        startUpload([...acceptedFiles], { configId: undefined })
+        startUpload(acceptedFiles, { configId: undefined })
 
 
         setIsDragOver(false)
     }
-
-
     const [isPending, startTransition] = useTransition();
 
     return (
