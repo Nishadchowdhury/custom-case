@@ -8,9 +8,9 @@ datasource db {
 }
 
 model Configuration {
-  id              String  @id @default(cuid()) // uuid is longer than cuid takes more space.
+  id              String  @id @default(cuid())
   width           Int
   height          Int
-  imageUrl        String
   croppedImageUrl String?
+  imageUrl        String
 }

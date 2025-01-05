@@ -23,7 +23,7 @@ const page: React.FC<pageProps> = async ({ searchParams }) => {
 
     console.log(configuration);
 
-    
+
     if (!configuration) {
         return notFound();
     }
@@ -35,3 +35,4 @@ const page: React.FC<pageProps> = async ({ searchParams }) => {
 }
 
 export default page;
+export const dynamic = 'force-dynamic';
