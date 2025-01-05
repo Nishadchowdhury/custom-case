@@ -21,6 +21,9 @@ const page: React.FC<pageProps> = async ({ searchParams }) => {
         },
     })
 
+    console.log(configuration);
+
+    
     if (!configuration) {
         return notFound();
     }
