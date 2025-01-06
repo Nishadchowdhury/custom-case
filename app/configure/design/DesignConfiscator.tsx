@@ -13,6 +13,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
 import { BASE_PRICE } from "@/config/products";
+import { useUploadThing } from "@/lib/uploadthing";
+import { useToast } from "@/hooks/use-toast";
 
 interface pageProps {
     configId: string;
@@ -25,8 +27,8 @@ interface pageProps {
 }
 
 const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions }) => {
-
-
+    const { startUpload, isUploading, } = useUploadThing("imageUploader");
+    const { toast } = useToast()
     const [options, setOptions] = useState<{
         color: (typeof COLORS)[number]
         model: (typeof MODELS.options)[number]
@@ -44,12 +46,12 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     const [renderedDimension, setRenderedDimension] = useState({
         width: imageDimensions.width / 4,
         height: imageDimensions.height / 4
-    })
+    }) // initial dimensions of the image
 
     const [renderedPosition, setRenderedPosition] = useState({
         x: 150,
         y: 205
-    })
+    }) // initial positions of the image
 
 
     const phoneCaseRef = useRef<HTMLDivElement>(null)
@@ -60,19 +62,21 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
         try {
             // const { } = phoneCaseRef.current?.getBoundingClientRect() // it gives the exact coordinates 
-            const {
-                left: caseLeft,
-                top: caseTop,
-                width,
-                height
+            const {// taking the position of case
+                left: caseLeft, // distance from the window to the element.
+                top: caseTop, // we need to work with another width property in this func that's why renaming the mandatory.
+                width, // rendered caseWidth
+                height // rendered caseHeight 
+                // this height and width we can use to create the canvas 
             } = phoneCaseRef.current!.getBoundingClientRect() // we're telling TS that we're sure about that we will get the data from it by replacing "?" with "!" here.
 
-            const {
+            const { // taking the position of outer container
                 left: containerLeft,
                 top: containerTop,
-            } = containerRef.current!.getBoundingClientRect();
+            } = containerRef.current!.getBoundingClientRect(); //returns the size of an element and its position relative to the viewport.
 
 
+            // calculating the offset -distance between case and its container-
             const leftOffset = caseLeft - containerLeft
             const topOffset = caseTop - containerTop
 
@@ -100,11 +104,21 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             const base64 = canvas.toDataURL() // this is the best way to convert a canvas to a base64 =it returns> a really long string contains the image data in base64 formate.
             const base64data = base64.split(',')[1]
             const blob = base64ToBlob(base64data, "image/png")
-            const file = new File([blob], "filename.png", { type: "image/png" });
+            const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
             console.log(file.size);
             // 6.00.00
+
+            await startUpload([file], {
+                configId
+            })
+
         } catch (err) {
             // and if any error happens then we will trigger a toast to the user so that they can see what really happened.
+            toast({
+                title: "Something went wrong!!!",
+                description: "There was a problem saving your config, please try again.",
+                variant: "destructive",
+            })
 
         }
     }
@@ -158,7 +172,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         width: imageDimensions.width / 4
                     }}
                     lockAspectRatio
-
                     onResizeStop={(_, __, ref, ___, { x, y }) => { // _ means we won't use this var. 
                         setRenderedDimension({
                             height: parseInt(ref.style.height.slice(0, -2)  /*50px*/),
@@ -171,7 +184,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         const { x, y } = data;
                         setRenderedPosition({ x, y });
                     }}
-
 
                     resizeHandleComponent={{
                         bottomRight: <HandleComponent />,
