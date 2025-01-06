@@ -6,12 +6,13 @@ import { cn, formatePrice } from "@/lib/utils";
 import NextImage from 'next/image'
 import { Rnd } from 'react-rnd'
 import { RadioGroup } from '@headlessui/react'
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { COLORS, FINISHES, MATERIALS, MODELS } from "@/validators/option-validator";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
+import { BASE_PRICE } from "@/config/products";
 
 interface pageProps {
     configId: string;
@@ -40,11 +41,95 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
         }
     )
 
+    const [renderedDimension, setRenderedDimension] = useState({
+        width: imageDimensions.width / 4,
+        height: imageDimensions.height / 4
+    })
+
+    const [renderedPosition, setRenderedPosition] = useState({
+        x: 150,
+        y: 205
+    })
+
+
+    const phoneCaseRef = useRef<HTMLDivElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    async function saveConfiguration() {
+        // if (!phoneCaseRef.current) return // to get rid from the error of TS cz we destructured "phoneCaseRef.current?.getBoundingClientRect()" but if the ref.current is undefined then the user won't know what happened here and that's why we need to use other way.
+
+        try {
+            // const { } = phoneCaseRef.current?.getBoundingClientRect() // it gives the exact coordinates 
+            const {
+                left: caseLeft,
+                top: caseTop,
+                width,
+                height
+            } = phoneCaseRef.current!.getBoundingClientRect() // we're telling TS that we're sure about that we will get the data from it by replacing "?" with "!" here.
+
+            const {
+                left: containerLeft,
+                top: containerTop,
+            } = containerRef.current!.getBoundingClientRect();
+
+
+            const leftOffset = caseLeft - containerLeft
+            const topOffset = caseTop - containerTop
+
+            const actualX = renderedPosition.x - leftOffset
+            const actualY = renderedPosition.y - topOffset
+
+            const canvas = document.createElement('canvas')
+            canvas.width = width
+            canvas.height = height
+            const ctx = canvas.getContext('2d') // context allows to modify the canvas and draw things.
+
+            const userImage = new Image();
+            userImage.crossOrigin = 'anonymous'; // it will prevent occurring any CORS errors.
+            userImage.src = imageUrl;
+            await new Promise((resolve, reject) => (userImage.onload = resolve)) // waiting to create the image 'new Image()'
+
+            ctx?.drawImage(
+                userImage,
+                actualX,
+                actualY,
+                renderedDimension.width,
+                renderedDimension.height,
+            )
+
+            const base64 = canvas.toDataURL() // this is the best way to convert a canvas to a base64 =it returns> a really long string contains the image data in base64 formate.
+            const base64data = base64.split(',')[1]
+            const blob = base64ToBlob(base64data, "image/png")
+            const file = new File([blob], "filename.png", { type: "image/png" });
+            console.log(file.size);
+            // 6.00.00
+        } catch (err) {
+            // and if any error happens then we will trigger a toast to the user so that they can see what really happened.
+
+        }
+    }
+
+    function base64ToBlob(base64: string, mimeType: string) {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers) // 
+        return new Blob([byteArray], { type: mimeType })
+
+    }
+
     return (
-        <div className='relative mt-20 grid grid-cols-3 mb-20 pb-20 ' >
-            <div className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+        <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 ' >
+            <div
+                ref={containerRef}
+                className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
                 <div className="relative w-60 bg-opacity-50 pointer-events-none aspect-[896/1831] _3:58:00_  ">
                     <AspectRatio
+                        ref={phoneCaseRef}
                         ratio={896 / 1831} //the ratio of the phone png we're gonna use
                         className="pointer-events-none relative z-50 aspect-[896/1831] w-full"
                     >
@@ -62,7 +147,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             `bg-${options.color.tw}`)}
                     />
 
-
                 </div>
 
 
@@ -74,12 +158,28 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         width: imageDimensions.width / 4
                     }}
                     lockAspectRatio
+
+                    onResizeStop={(_, __, ref, ___, { x, y }) => { // _ means we won't use this var. 
+                        setRenderedDimension({
+                            height: parseInt(ref.style.height.slice(0, -2)  /*50px*/),
+                            width: parseInt(ref.style.width.slice(0, -2))  /*50px*/
+                        })
+                        setRenderedPosition({ x, y })
+                    }} // this event will trigger when the resize event is triggered.
+
+                    onDragStop={(_, data) => {
+                        const { x, y } = data;
+                        setRenderedPosition({ x, y });
+                    }}
+
+
                     resizeHandleComponent={{
                         bottomRight: <HandleComponent />,
                         bottomLeft: <HandleComponent />,
                         topRight: <HandleComponent />,
                         topLeft: <HandleComponent />
                     }}
+
                     className="absolute z-20 hover: border-[3px] border-primary"
 
                 >
@@ -97,7 +197,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
             </div>
 
-            <div className="h-[37.5rem] flex flex-col bg-white ">
+            <div className="h-[37.5rem] w-full col-span-full lg:col-span-1 flex flex-col bg-white ">
                 <ScrollArea
                     className="relative flex-1 overflow-auto "
                 >
@@ -273,7 +373,21 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                 <div className="w-full px-8 h-1/6 bg-white">
                     <div className="h-px w-full bg-zinc-200  " />
-                    
+                    <div className="w-full h-full flex justify-end items-center">
+                        <div className="w-full flex gap-6 items-center ">
+                            <p className="font-medium whitespace-nowrap">
+                                {formatePrice((BASE_PRICE + options.finish.price + options.material.price) / 100)}
+                            </p>
+                            <Button
+                                size={"sm"}
+                                className="w-full"
+                                onClick={() => saveConfiguration()}
+                            >
+                                Continue
+                                <ArrowRight className="size-4 ml-1.5 inline" />
+                            </Button>
+                        </div>
+                    </div>
                 </div>
 
             </div >
