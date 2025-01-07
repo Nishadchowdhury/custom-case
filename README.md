@@ -34,42 +34,75 @@ There Is X steps to get the cropped image
 
 4.  then we need an async function to generate the cropped image and store that into clouds.
     1-
-    we need to know 2 different things. 1. Where is the container on the page. 2.where is the phone case in the container. 5:35:00
+    we need to know 2 different things. 1. Where is the container on the page. 2- calculate where is the phone case in the container. 5:35:00
     we'll takeout the positions by using refs
     const phoneCaseRef = useRef<HTMLDivElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
+    3- need an async function to calculate and generate the cropped image to store.
 
-    async function saveConfiguration() {
-    // if (!phoneCaseRef.current) return // to get rid from the error of TS cz we destructured "phoneCaseRef.current?.getBoundingClientRect()" but if the ref.current is undefined then the user won't know what happened here and that's why we need to use other way.
+    1. calculation:-  
+        const {// taking the position of case
+       left: caseLeft, // distance from the window to the element.
+       top: caseTop, // we need to work with another width property in this func that's why renaming the mandatory.
+       width, // rendered caseWidth
+       height // rendered caseHeight
+       // this height and width we can use to create the canvas
+       } = phoneCaseRef.current!.getBoundingClientRect() // we're telling TS that we're sure about that we will get the data from it by replacing "?" with "!" here.
 
-           try {
-               // const { } = phoneCaseRef.current?.getBoundingClientRect() // it gives the exact coordinates
-               const {
-                   left: caseLeft,
-                   top: caseTop,
-                   width,
-                   height
-               } = phoneCaseRef.current!.getBoundingClientRect() // we're telling TS that we're sure about that we will get the data from it by replacing "?" with "!" here.
+       const { // taking the position of outer container
+       left: containerLeft,
+       top: containerTop,
+       } = containerRef.current!.getBoundingClientRect(); //returns the size of an element and its position relative to the viewport.
 
-               const {
-                   left: containerLeft,
-                   top: containerTop,
-               } = containerRef.current!.getBoundingClientRect();
+       const actualX = renderedPosition.x - leftOffset // distance of the image - distance of cover from container = distance of the image in the cover.
+       const actualY = renderedPosition.y - topOffset
 
-    } catch (err) {
-    // and if any error happens then we will trigger a toast to the user so that they can see what really happened.
-    toast({
-    title: "Something went wrong!!!",
-    description: "There was a problem saving your config, please try again.",
-    variant: "destructive",
+5.  creating a canvas same as the cover.
+
+    const canvas = document.createElement('canvas') // create a canvas to print things.
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d') // context allows to modify the canvas and draw things.
+
+6.  create an image instance to draw into the canvas
+
+    const userImage = new Image(); // to get the image that we want to draw into the canvas.
+    userImage.crossOrigin = 'anonymous'; // it will prevent occurring any CORS errors.
+    userImage.src = imageUrl;
+    await new Promise((resolve, reject) => (userImage.onload = resolve)) // waiting to create the image 'new Image()'
+    // now the image is fully loaded and ready to be drawn into the canvas.
+
+    ctx?.drawImage(
+    userImage,
+    actualX, // calculated position from the visual elements
+    actualY,
+    renderedDimension.width, // final sizes of the image (dimensions)
+    renderedDimension.height,
+    )
+
+7.  exporting the image
+
+    const base64 = canvas.toDataURL() // this is the best way to convert a canvas to a base64 =it returns> a really long string contains the image data in base64 formate.
+    const base64data = base64.split(',')[1] // [info of base64, theBase64String]
+    const blob = base64ToBlob(base64data, "image/png")
+    const file = new File([blob], String('CROP\_' + Date.now() + "\_file.png"), { type: "image/png" });
+    // 6.00.00
+
+    ---------------- function base64ToBlob(base64: string, mimeType: string) {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+        const byteArray = new Uint8Array(byteNumbers) //
+        return new Blob([byteArray], { type: mimeType })
+
+    }
+
+8.  store the image to a bucket and info to a DB
+    await startUpload([file], {
+    configId
     })
 
-           }
-           }
-
-
-
-
-
-
-5:44:00
+7 end : 5:55:20

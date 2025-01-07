@@ -44,14 +44,14 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     )
 
     const [renderedDimension, setRenderedDimension] = useState({
-        width: imageDimensions.width / 4,
+        width: imageDimensions.width / 4,// initial dimensions of the image 
         height: imageDimensions.height / 4
-    }) // initial dimensions of the image
+    }) // the size of the image.
 
     const [renderedPosition, setRenderedPosition] = useState({
-        x: 150,
+        x: 150,// initial positions of the image
         y: 205
-    }) // initial positions of the image
+    })
 
 
     const phoneCaseRef = useRef<HTMLDivElement>(null)
@@ -77,37 +77,41 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
             // calculating the offset -distance between case and its container-
-            const leftOffset = caseLeft - containerLeft
+            const leftOffset = caseLeft - containerLeft // (distance of case from window - distance of the container from window) = distance of the case from the starting of the container 
             const topOffset = caseTop - containerTop
 
-            const actualX = renderedPosition.x - leftOffset
-            const actualY = renderedPosition.y - topOffset
+            // there will be a canvas same size as the case.
+            // The position of the image on in the canvas is actualX and actualY // eg: rendered position is x150, y150. so 150-(100 distance of case from container) = 50. That means the image position in the canvas will be x=50px. 
+            const actualX = renderedPosition.x/*position between the image and container X*/ - leftOffset
+            const actualY = renderedPosition.y - topOffset /*distance between container and case eg: x100*/
+            // actualX and actualY relative to the case not the container. 
 
-            const canvas = document.createElement('canvas')
+            const canvas = document.createElement('canvas') // create a canvas to print things.
             canvas.width = width
             canvas.height = height
+
             const ctx = canvas.getContext('2d') // context allows to modify the canvas and draw things.
 
-            const userImage = new Image();
-            userImage.crossOrigin = 'anonymous'; // it will prevent occurring any CORS errors.
+            const userImage = new Image(); // to get the image that we want to draw into the canvas.
+            userImage.crossOrigin = 'anonymous'; // it will prevent occurring any CORS errors during drawing the image into the canvas.
             userImage.src = imageUrl;
-            await new Promise((resolve, reject) => (userImage.onload = resolve)) // waiting to create the image 'new Image()'
+            await new Promise((resolve, reject) => (userImage.onload = resolve)) // waiting to load the image from the url into the userImage var.
+            // now the image is fully loaded and ready to be drawn into the canvas.
 
             ctx?.drawImage(
                 userImage,
-                actualX,
+                actualX, // calculated position from the visual elements
                 actualY,
-                renderedDimension.width,
+                renderedDimension.width, // final sizes of the image (dimensions)
                 renderedDimension.height,
             )
 
             const base64 = canvas.toDataURL() // this is the best way to convert a canvas to a base64 =it returns> a really long string contains the image data in base64 formate.
-            const base64data = base64.split(',')[1]
-            const blob = base64ToBlob(base64data, "image/png")
+            const base64data = base64.split(',')[1] // [info of base64, theBase64String]
+            const blob = base64ToBlob(base64data, "image/png") // turning into a blob object
             const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
-            console.log(file.size);
             // 6.00.00
-
+            return
             await startUpload([file], {
                 configId
             })
@@ -125,12 +129,12 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
     function base64ToBlob(base64: string, mimeType: string) {
         const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
+        const byteArrayLength = byteCharacters.length;
+        const byteNumbers = new Array(byteArrayLength);
+        for (let i = 0; i < byteArrayLength; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
-
-        const byteArray = new Uint8Array(byteNumbers) // 
+        const byteArray = new Uint8Array(byteNumbers)
         return new Blob([byteArray], { type: mimeType })
 
     }
