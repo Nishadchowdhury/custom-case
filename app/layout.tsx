@@ -5,6 +5,7 @@ import "./custom.css";
 import Navbar from "@/components/custom/Navbar";
 import Footer from "@/components/custom/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import Provider from "@/components/Providers/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,14 +26,16 @@ export default function RootLayout({
         <main className="flex flex-col min-h-[calc(100vh-3.5rem-1px)]" >
           <div className="flex flex-1 flex-col h-full" >
 
-            {children}
+            <Provider>
+              {children}
+            </Provider>
 
           </div>
           <Footer />
         </main>
 
         <Toaster />
-        
+
       </body>
     </html>
   );
