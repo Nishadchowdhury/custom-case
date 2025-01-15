@@ -48,7 +48,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             })
         },
         onSuccess: () => {
-            router.push(`configure/preview?id=${configId}`)
+            router.push(`/preview?id=${configId}`)
         }
     });
 

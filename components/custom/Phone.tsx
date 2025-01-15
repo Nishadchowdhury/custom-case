@@ -24,7 +24,7 @@ const Phone: React.FC<pageProps> = ({ className, imgSrc, dark = false, ...props 
             >
 
                 <img
-                    className="object-cover select-none"
+                    className="object-cover min-w-full min-h-full select-none"
                     src={imgSrc}
                     alt="overlay phone image"
 
