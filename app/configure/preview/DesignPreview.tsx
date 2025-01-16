@@ -1,11 +1,13 @@
 "use client"
 
 import Phone from '@/components/custom/Phone';
+import { Button } from '@/components/ui/button';
 import { BASE_PRICE, PRODUCTS_PRICES } from '@/config/products';
 import { cn, formatePrice } from '@/lib/utils';
 import { COLORS, FINISHES, MATERIALS, MODELS } from '@/validators/option-validator';
 import { Configuration } from '@prisma/client';
-import { Check } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { ArrowRight, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Confetti from 'react-dom-confetti';
 
@@ -27,6 +29,11 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
     const finishPrice = FINISHES.options.find(({ value }) => value === finish)?.price!
     const materialPrice = MATERIALS.options.find(({ value }) => value === material)?.price!
     const totalPrice = (BASE_PRICE + ((finishPrice || 0) + (materialPrice || 0)))
+
+    const { } = useMutation({
+        mutationKey: ['get-checkout-session'],
+        mutationFn: () => { }
+    })
 
 
     return <>
@@ -122,8 +129,14 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
                         </div>
                     </div>
 
-                    <div className='mt-8' >
-                        7:14:13
+                    <div className='mt-8 flex justify-end pb-12' >
+                        <Button
+                            isLoading={true}
+                            loadingText='loading'
+                            // disabled
+                            className='px-4 sm:px-6 lg:px-8'>
+                            Check out <ArrowRight className='size-4 ml-1.5 inline' />
+                        </Button>
                     </div>
                 </div>
             </div>

@@ -106,3 +106,20 @@ There Is X steps to get the cropped image
     })
 
 7 end : 5:55:20
+
+------------------------------------------integration stripe------------------------------------------
+
+1. Install and create a file in lib folder "Stripe.ts" and import Stripe from "stripe";
+2. export stripe after creating instance of Stripe like const = new Stripe(process.env.SSK ?? '', {apiVersion: "", typescriptL:true}). Initial setUp of stripe is done.
+3. Create the product in stripe by providing the product's details
+   --- const product = await stripe.products.create({
+   name: "Custom Iphone Case",
+   images: [configuration.imageUrl],
+   default_price_data: {
+   currency: "USD",
+   unit_amount: price,
+   },
+   });
+4. now it's the time to create the actual payment session
+5. now need to create an action to run the function create a payment session.
+   1.check the user and the configuration. Then check the order exist or not, if not create. 2. to create a payment session need to create a product. 3. Using the product create a payment session 4. return the payment page.

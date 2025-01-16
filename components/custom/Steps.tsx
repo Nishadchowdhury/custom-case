@@ -23,7 +23,7 @@ const STEPS = [
 
 const Steps: React.FC = () => {
     const pathname = usePathname()
-    return <ol className="rounded-md bg-white lg:flex lg:rounded-none lg:border-1 lg:border-x lg:border-gray-200 ">
+    return <ol className="rounded-md bg-white bg-opacity-75 lg:flex lg:rounded-none lg:border-1 lg:border-x lg:border-gray-200 ">
         {
 
             STEPS.map((step, i) => {
