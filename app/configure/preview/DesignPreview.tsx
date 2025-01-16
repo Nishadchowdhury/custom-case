@@ -10,13 +10,17 @@ import { useMutation } from '@tanstack/react-query';
 import { ArrowRight, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Confetti from 'react-dom-confetti';
+import { createCheckoutSession } from './actions';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 interface pageProps {
     configuration: Configuration
 }
 const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
-
-    const [confetti, setShowConfetti] = useState(false);
+    const { toast } = useToast()
+    const router = useRouter()
+    const [showConfetti, setShowConfetti] = useState(false);
     useEffect(() => {
         setShowConfetti(true)
     }, []);
@@ -30,9 +34,20 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
     const materialPrice = MATERIALS.options.find(({ value }) => value === material)?.price!
     const totalPrice = (BASE_PRICE + ((finishPrice || 0) + (materialPrice || 0)))
 
-    const { } = useMutation({
+    const { mutate: createPaymentSession, isPending } = useMutation({
         mutationKey: ['get-checkout-session'],
-        mutationFn: () => { }
+        mutationFn: createCheckoutSession,
+        onSuccess: ({ url }) => {
+            if (url) router.push(url)
+            else throw new Error("Unable to retrieve payment URL.")
+        },
+        onError: () => {
+            toast({
+                title: "something went wrong",
+                description: "There was an error please try again.",
+                variant: "destructive",
+            })
+        }
     })
 
 
@@ -42,7 +57,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
             className='pointer-events-none select-none absolute inset-0 overflow-hidden flex justify-center '
         >
             <Confetti
-                active={confetti}
+                active={showConfetti}
                 config={{
                     elementCount: 200,
                     spread: 90,
@@ -131,9 +146,10 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
 
                     <div className='mt-8 flex justify-end pb-12' >
                         <Button
-                            isLoading={true}
+                            onClick={() => createPaymentSession({ configId: configuration.id })}
+                            isLoading={isPending}
                             loadingText='loading'
-                            // disabled
+                            disabled={isPending}
                             className='px-4 sm:px-6 lg:px-8'>
                             Check out <ArrowRight className='size-4 ml-1.5 inline' />
                         </Button>

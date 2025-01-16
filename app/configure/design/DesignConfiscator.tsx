@@ -48,7 +48,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             })
         },
         onSuccess: () => {
-            router.push(`/preview?id=${configId}`)
+            router.push(`/configure/preview?id=${configId}`)
         }
     });
 
@@ -461,6 +461,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 {formatePrice((BASE_PRICE + options.finish.price + options.material.price) / 100)}
                             </p>
                             <Button
+                                isLoading={isPending}
+                                loadingText='loading'
+                                disabled={isPending}
+
                                 size={"sm"}
                                 className="w-full"
                                 onClick={() => saveConfig({
@@ -472,7 +476,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 })}
                             >
                                 Continue
-                                {isPending ? <Loader2 className="size-4 ml-1.5 inline animate-spin" /> : <ArrowRight className="size-4 ml-1.5 inline" />}
+                                <ArrowRight className="size-4 ml-1.5 inline" />
                             </Button>
                         </div>
                     </div>
