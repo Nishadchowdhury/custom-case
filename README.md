@@ -123,3 +123,8 @@ There Is X steps to get the cropped image
 4. now it's the time to create the actual payment session
 5. now need to create an action to run the function create a payment session.
    1.check the user and the configuration. Then check the order exist or not, if not create. 2. to create a payment session need to create a product. 3. Using the product create a payment session 4. return the payment page.
+
+------------------------------------- Tailwind css advance -------------------------------------
+
+1.  divide-x divide-gray-200 => it adds dividers after and before the elements in a grid and first and last child elements won't get the divider border.
+2.  we can tun any element to shadCn-button by providing buttonVariants in classNames <LoginLink className={buttonVariants({ variant: "outline" })} >Login</LoginLink>

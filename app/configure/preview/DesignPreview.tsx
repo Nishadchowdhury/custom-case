@@ -13,6 +13,8 @@ import Confetti from 'react-dom-confetti';
 import { createCheckoutSession } from './actions';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import LoginModal from '@/components/custom/LoginModal';
 
 interface pageProps {
     configuration: Configuration
@@ -20,6 +22,10 @@ interface pageProps {
 const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
     const { toast } = useToast()
     const router = useRouter()
+    const { id } = configuration;
+    const { user } = useKindeBrowserClient();
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+
     const [showConfetti, setShowConfetti] = useState(false);
     useEffect(() => {
         setShowConfetti(true)
@@ -50,6 +56,16 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
         }
     })
 
+    const handleCheckAuth = () => {
+        if (user) {
+            // create the payment session
+            createPaymentSession({ configId: id })
+        } else {
+            // need to logIn
+            localStorage.setItem('configurationId', id);
+            setIsLoginModalOpen(true);
+        }
+    }
 
     return <>
         <div
@@ -66,6 +82,8 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
                 }}
             />
         </div>
+
+        <LoginModal isOpen={isLoginModalOpen} setIsOpen={setIsLoginModalOpen} />
 
         <div className="mt-20 grid grid-cols-1 text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6  md:gap-x-8 lg:gap-x-12">
             <div className="sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2 ">
@@ -146,7 +164,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
 
                     <div className='mt-8 flex justify-end pb-12' >
                         <Button
-                            onClick={() => createPaymentSession({ configId: configuration.id })}
+                            onClick={handleCheckAuth}
                             isLoading={isPending}
                             loadingText='loading'
                             disabled={isPending}

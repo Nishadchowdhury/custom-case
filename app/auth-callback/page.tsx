@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from "react";
+
 const Page = () => {
-    // 8:06:06
+    const [configId, setConfigId] = useState<string | null>(null)
 }
 
 export default Page;
