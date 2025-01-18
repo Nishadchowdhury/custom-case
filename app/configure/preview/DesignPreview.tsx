@@ -105,7 +105,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
                 <div className='grid grid-cols-1 gap-y-8 border-b border-gray-200 py-8 sm:grid-cols-2 sm:gap-x-6 sm:py-6 md:py-10'>
                     <div>
                         <p className='font-medium text-zinc-950' >Highlights</p>
-                        <ol className='mt-3 text-zinc-700 list-disc list-inside '>
+                        <ol className='mt-3 text-zinc-700 list-disc list-inside'>
                             <li>Wireless charging compatible </li>
                             <li>TPU shock absorption </li>
                             <li>Packaging made from recycled materials </li>
