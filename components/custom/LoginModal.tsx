@@ -6,9 +6,11 @@ import { buttonVariants } from "../ui/button";
 
 interface pageProps {
     isOpen: boolean;
-    setIsOpen: Dispatch<SetStateAction<boolean>>
+    setIsOpen: Dispatch<SetStateAction<boolean>>,
+    message: string;
+    RedirectURL?: string;
 }
-const LoginModal: React.FC<pageProps> = ({ isOpen, setIsOpen }) => {
+const LoginModal: React.FC<pageProps> = ({ isOpen, setIsOpen, message, RedirectURL }) => {
 
 
     return <Dialog onOpenChange={setIsOpen} open={isOpen}>
@@ -35,15 +37,26 @@ const LoginModal: React.FC<pageProps> = ({ isOpen, setIsOpen }) => {
                     <span className="font-medium text-zinc-900 ">
                         Your configuration was saved!
                     </span>{' '}
-                    Please login or create an account to complete your purchase.
+                    {message ? message : "Please login or create an account to complete your purchase."}
 
                 </DialogDescription>
             </DialogHeader>
 
             <div className="grid grid-cols-2 gap-6  " >
 
-                <LoginLink className={buttonVariants({ variant: "outline" })} >Log In</LoginLink>
-                <RegisterLink className={buttonVariants({ variant: "default" })} >Sign Up</RegisterLink>
+                <LoginLink
+                    className={buttonVariants({ variant: "outline" })}
+                    postLoginRedirectURL={RedirectURL || process.env.KINDE_POST_LOGIN_REDIRECT_URL}
+                >
+                    Log In
+                </LoginLink>
+
+                <RegisterLink
+                    className={buttonVariants({ variant: "default" })}
+                    postLoginRedirectURL={RedirectURL || process.env.KINDE_POST_LOGIN_REDIRECT_URL}
+                >
+                    Sign Up
+                </RegisterLink>
 
             </div>
 

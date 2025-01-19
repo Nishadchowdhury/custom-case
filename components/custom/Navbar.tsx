@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { buttonVariants } from "../ui/button";
@@ -41,7 +40,7 @@ const Navbar: React.FC<pageProps> = async () => {
                                 </Link>
 
                                 {isAdmin ?
-                                    <Link href={"/api/auth/logout"}
+                                    <Link href={"/dashboard"}
                                         className={buttonVariants({
                                             size: "sm",
                                             variant: "ghost",
@@ -76,7 +75,6 @@ const Navbar: React.FC<pageProps> = async () => {
                                         variant: "ghost"
                                     })} >
                                     Log in
-                                    <ArrowRight className="ml-1.5 size-5" />
                                 </Link>
 
                                 <div className="h-8 w-px bg-zinc-200 hidden sm:block " />
