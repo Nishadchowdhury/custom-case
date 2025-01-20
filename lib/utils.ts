@@ -17,7 +17,7 @@ export const formatePrice = (price: number) => {
 };
 
 export function constructMetadata({
-  title = "CustomCaser - custom high-quality phone cases",
+  title = "CustomCase - custom high-quality phone cases",
   description = "Create custom high-quality phone cases in seconds",
   image = "/thumbnail.png",
   icons = "/favicon.ico",
@@ -43,5 +43,6 @@ export function constructMetadata({
       creator: "@NishadChowdhuri",
     },
     icons,
+    metadataBase: new URL("https://custom-case-nishad.vercel.app"),
   };
 }
