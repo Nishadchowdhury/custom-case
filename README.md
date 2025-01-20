@@ -107,6 +107,10 @@ There Is X steps to get the cropped image
 
 7 end : 5:55:20
 
+------------------------------------------Uploadthing------------------------------------------
+
+1. one thing is most important that is do not forget to add this variable to production environment variable as "UPLOADTHING_URL = https://domain.xxx" "
+
 ------------------------------------------integration stripe------------------------------------------
 
 1. Install and create a file in lib folder "Stripe.ts" and import Stripe from "stripe";
