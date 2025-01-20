@@ -15,7 +15,7 @@ interface pageProps {
    orderStatus: OrderStatus
 }
 
-const LABEL_MAP: Record<keyof typeof OrderStatus, string> = { // This is TypeScript Map, a collection that stores key-value pairs, where keys can be of any type. It basically we use to turn data into usable formate.
+const LABEL_MAP: Record<keyof typeof OrderStatus, string> = { // This is TypeScript Map, a collection that stores key-value pairs, where keys can be of any type. It basically we use to turn data into usable formate. This time the keys are as OrderStatus types.
    awaiting_shipment: "Awaiting Shipment",
    fullfilled: "Fullfilled",
    shipped: "Shipped",

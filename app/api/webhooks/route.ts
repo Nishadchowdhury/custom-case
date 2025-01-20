@@ -3,7 +3,13 @@ import { stripe } from "@/lib/Stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { Resend } from "resend";
+import OrderReceivedEmail from "../../../components/custom/emails/OrderReceivedEmail";
 
+// resend webhook
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// stripe webhook
 export async function POST(req: Request) {
   try {
     const body = await req.text(); // instead of req.body and else we'll take req.text to validate that the req from stripe. Stripe sends a signature in req to validate.
@@ -43,7 +49,7 @@ export async function POST(req: Request) {
       const billingAddress = session.customer_details!.address;
       const shippingAddress = session.shipping_details!.address;
 
-      await db.order.update({
+      const updatedOrder = await db.order.update({
         where: {
           id: orderId,
         },
@@ -72,6 +78,26 @@ export async function POST(req: Request) {
             },
           },
         },
+      });
+
+      await resend.emails.send({
+        from: "Custom Case <nishadhj111@gmail.com>", // give the email that owns the API key.
+        to: [event.data.object.customer_details.email],
+        subject: "Thanks for your order!",
+        react: OrderReceivedEmail({
+          orderId,
+          orderDate: updatedOrder.createdAt.toLocaleDateString(),
+
+          //@ts-ignore
+          shippingAddress: {
+            name: session.customer_details!.name!,
+            street: shippingAddress!.line1!,
+            city: shippingAddress!.city!,
+            postalCode: shippingAddress!.postal_code!,
+            country: shippingAddress!.country!,
+            state: shippingAddress!.state!,
+          },
+        }),
       });
     }
 

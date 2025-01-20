@@ -7,7 +7,7 @@ import { buttonVariants } from "../ui/button";
 interface pageProps {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>,
-    message: string;
+    message?: string;
     RedirectURL?: string;
 }
 const LoginModal: React.FC<pageProps> = ({ isOpen, setIsOpen, message, RedirectURL }) => {

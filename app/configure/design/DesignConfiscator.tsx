@@ -462,7 +462,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             </p>
                             <Button
                                 isLoading={isPending}
-                                loadingText='loading'
+                                loadingText='Saving'
                                 disabled={isPending}
 
                                 size={"sm"}

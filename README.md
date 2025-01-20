@@ -134,4 +134,67 @@ There Is X steps to get the cropped image
 1.  user will click CONTINUE button and that bull lead to stripe's hosted payment page.
 2.  when the user paid by a card/system, stripe will send us something called a webhook _webhook is an API call when payment done stripe will call the API that we will create in our next js app_
 3.  Being called the API means the user paid and now the _product_ must be ready for shipment. In this API will determine what next should happen.
-4.  
+4.
+
+-------------------------------------- Sending Email --------------------------------------------------
+
+1.  React email component:- that helps to create email layout for us and add custom styles to design it.
+2.  resend:- it is SMTP server that deliveries the email to the addresses, It usage AWS to do the operation. It take a few stapes.
+
+    1.  create an api key from resend.com
+    2.  construct resend instance in webhook file where we wrote the code to validate the stripe signature.
+    3.  then right after the being db operation compensation we need to make an API call like below.
+        await resend.emails.send({
+        from: "Custom Case <nishadhj111@gmail.com>", // give the email that owns the API key.
+        to: [event.data.object.customer_details.email],
+        subject: "Thanks for your order!",
+        react: OrderReceivedEmail({
+        orderId,
+        orderDate: updatedOrder.createdAt.toLocaleDateString(),
+
+              //@ts-ignore
+              shippingAddress: {
+                name: session.customer_details!.name!,
+                street: shippingAddress!.line1!,
+                city: shippingAddress!.city!,
+                postalCode: shippingAddress!.postal_code!,
+                country: shippingAddress!.country!,
+                state: shippingAddress!.state!,
+              },
+            }),
+
+        });
+
+--------------------------------------------metadata --------------------------------------------
+
+1.lib>utils.ts file create a function like bellow.
+
+export function constructMetadata({
+title = "CustomCase - custom high-quality phone cases",
+description = "Create custom high-quality phone cases in seconds",
+image = "/thumbnail.png",
+icons = "/favicon.ico",
+}: {
+title?: string;
+description?: string;
+image?: string;
+icons?: string;
+} = {}): Metadata {
+return {
+title,
+description,
+openGraph: {
+title,
+description,
+images: [{ url: image }],
+},
+twitter: {
+card: "summary_large_image",
+title,
+description,
+images: [image],
+creator: "@NishadChowdhuri",
+},
+icons,
+};
+}
