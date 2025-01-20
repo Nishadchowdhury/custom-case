@@ -120,7 +120,7 @@ export default function Home() {
 
               <Phone
                 className="w-64 "
-                imgSrc="/testimonials/1.jpg"
+                imgSrc="./testimonials/1.jpg"
               />
 
 
