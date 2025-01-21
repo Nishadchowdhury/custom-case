@@ -12,6 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // stripe webhook
 export async function POST(req: Request) {
   try {
+    console.log("web hook being called");
     const body = await req.text(); // instead of req.body and else we'll take req.text to validate that the req from stripe. Stripe sends a signature in req to validate.
 
     const signature = headers().get("stripe-signature"); // getting the signature from stripe and if no signature then throw err 400: badReq.
@@ -80,25 +81,33 @@ export async function POST(req: Request) {
         },
       });
 
-      await resend.emails.send({
-        from: "Custom Case <nishadhj111@gmail.com>", // give the email that owns the API key.
-        to: [event.data.object.customer_details.email],
-        subject: "Thanks for your order!",
-        react: OrderReceivedEmail({
-          orderId,
-          orderDate: updatedOrder.createdAt.toLocaleDateString(),
+      console.log("mail sending");
+      try {
+        const { data, error } = await resend.emails.send({
+          from: "CustomCase <nishadhj111@gmail.com>", // give the email that owns the API key.
+          to: [event.data.object.customer_details.email],
+          subject: "Thanks for your order!",
+          react: OrderReceivedEmail({
+            orderId,
+            orderDate: updatedOrder.createdAt.toLocaleDateString(),
 
-          //@ts-ignore
-          shippingAddress: {
-            name: session.customer_details!.name!,
-            street: shippingAddress!.line1!,
-            city: shippingAddress!.city!,
-            postalCode: shippingAddress!.postal_code!,
-            country: shippingAddress!.country!,
-            state: shippingAddress!.state!,
-          },
-        }),
-      });
+            //@ts-ignore
+            shippingAddress: {
+              name: session.customer_details!.name!,
+              street: shippingAddress!.line1!,
+              city: shippingAddress!.city!,
+              postalCode: shippingAddress!.postal_code!,
+              country: shippingAddress!.country!,
+              state: shippingAddress!.state!,
+            },
+          }),
+        });
+
+        console.log({ data, error });
+      } catch (error) {
+        console.log(error);
+      }
+      console.log("mail send done");
     }
 
     return NextResponse.json({ result: event, ok: true });

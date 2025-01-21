@@ -135,9 +135,9 @@ There Is X steps to get the cropped image
 
 -------------------------------------- Payment flow -----------------------------------------------
 
-1.  user will click CONTINUE button and that bull lead to stripe's hosted payment page.
-2.  when the user paid by a card/system, stripe will send us something called a webhook _webhook is an API call when payment done stripe will call the API that we will create in our next js app_
-3.  Being called the API means the user paid and now the _product_ must be ready for shipment. In this API will determine what next should happen.
+1. from preview page user will click CONTINUE button and that bull lead to stripe's hosted payment page.
+2. when the user paid by a card/system, stripe will send us something called a webhook _webhook is an API call when payment done stripe will call the API that we will create in our next js app_ the web hook will be called following the rote that we provided on stripe website in webhook configuration and the route must be a hosted website url.
+3. Being called the API means the user paid and now the _product_ must be ready for shipment. In this API will determine what next should happen.
 4.
 
 -------------------------------------- Sending Email --------------------------------------------------
