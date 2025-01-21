@@ -9,7 +9,6 @@ const page: React.FC<pageProps> = () => {
 
     return (
         <Suspense
-            fallback
         >
             <ThankYou />
         </Suspense>

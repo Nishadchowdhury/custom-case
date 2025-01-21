@@ -35,7 +35,7 @@ const ThankYou: React.FC<pageProps> = () => {
         return (
             <div className="w-full mt-24 flex justify-center" >
                 <div className="font-semibold text-2xl text-destructive">
-                    <p>{error.message}</p>
+                    <p className="underline" >{error.message && "You need to logged in to access the privileges of the page! "}</p>
                     <div className="flex justify-center">
                         <LoginModal
                             isOpen={open}
