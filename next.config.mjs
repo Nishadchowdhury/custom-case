@@ -1,8 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['utfs.io','8yhbykdou7.ufs.sh'],
-    }
+        domains: ['utfs.io', '8yhbykdou7.ufs.sh'],
+    },
+    async headers() {
+        return [
+            {
+                source: '/', // Matches all routes
+                headers: [
+                    {
+                        key: 'Access-Control-Allow-Origin',
+                        value: '*',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Methods',
+                        value: 'GET, POST, PUT, DELETE, OPTIONS',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Headers',
+                        value: 'Content-Type, Authorization',
+                    },
+                ],
+            },
+        ];
+    },
 };
 
 export default nextConfig;
