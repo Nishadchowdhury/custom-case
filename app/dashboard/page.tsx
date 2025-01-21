@@ -15,8 +15,8 @@ const page: React.FC<pageProps> = async () => {
     const { getUser } = getKindeServerSession()
     const user = await getUser()
 
-    const adminEmail = process.env.ADMIN_EMAIL
-    if (!user || user.email !== adminEmail) return notFound()
+    const isAdmin = user?.email === process.env.ADMIN_EMAIL;
+    if (!user || !isAdmin) return notFound()
 
     const orders = await db.order.findMany({
         where: {

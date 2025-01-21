@@ -271,7 +271,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             fill
                             alt="your Image"
                             className="pointer-events-none"
-
+                            
                         />
                     </div>
                 </Rnd>
@@ -492,3 +492,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 {/* <h1 className="bg-zinc-900 border-zinc-900 bg-blue-950 border-blue-950 bg-rose-950 border-rose-950 hidden" /> */ }
 
 export default DesignConfiscator;
+
+/* 
+
+http://localhost:3000/_next/image?url=https%3A%2F%2Futfs.io%2Ff%2F93eec234-3f3d-4142-8ca4-dcfce6b59148-y7xt7f.png&w=1920&q=75
+http://localhost:3000/_next/image?url=https%3A%2F%2F8yhbykdou7.ufs.sh%2Ff%2Ff4a96b2a-8b7d-42d0-b823-9dbf4a39d35a-y7xt7e.png&w=1920&q=75
+
+*/
