@@ -32,15 +32,18 @@ const Navbar: React.FC<pageProps> = async () => {
                             ?
                             <>
                                 <Link href={"/api/auth/logout"}
+                                    prefetch={false}
                                     className={buttonVariants({ // this function gives all the structure of a shadeCn ui's button
                                         size: "sm",
                                         variant: "ghost",
-                                    })} >
+                                    })}
+                                >
                                     Sign out
                                 </Link>
 
                                 {isAdmin ?
                                     <Link href={"/dashboard"}
+                                        prefetch={false}
                                         className={buttonVariants({
                                             size: "sm",
                                             variant: "ghost",
@@ -62,6 +65,7 @@ const Navbar: React.FC<pageProps> = async () => {
                             :
                             <>
                                 <Link href={"/api/auth/register"}
+                                    prefetch={false}
                                     className={buttonVariants({ // this function gives all the structure of a shadeCn ui's button
                                         size: "sm",
                                         variant: "ghost",
