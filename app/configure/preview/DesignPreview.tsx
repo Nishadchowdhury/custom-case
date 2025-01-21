@@ -1,20 +1,22 @@
 "use client"
 
+import LoginModal from '@/components/custom/LoginModal';
 import Phone from '@/components/custom/Phone';
 import { Button } from '@/components/ui/button';
 import { BASE_PRICE, PRODUCTS_PRICES } from '@/config/products';
+import { useToast } from '@/hooks/use-toast';
 import { cn, formatePrice } from '@/lib/utils';
 import { COLORS, FINISHES, MATERIALS, MODELS } from '@/validators/option-validator';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { Configuration } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
 import { ArrowRight, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Confetti from 'react-dom-confetti';
 import { createCheckoutSession } from './actions';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import LoginModal from '@/components/custom/LoginModal';
+
+
 
 interface pageProps {
     configuration: Configuration

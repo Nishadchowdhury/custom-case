@@ -84,7 +84,7 @@ export async function POST(req: Request) {
       console.log("mail sending");
       try {
         const { data, error } = await resend.emails.send({
-          from: "CustomCase <nishadhj111@gmail.com>", // give the email that owns the API key.
+          from: "CustomCase <onReply@nishadchowdhury.online>", // verify a domain and then add yourText@yourVerifiedDomain.com.
           to: [event.data.object.customer_details.email],
           subject: "Thanks for your order!",
           react: OrderReceivedEmail({
