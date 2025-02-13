@@ -6,6 +6,8 @@ import { formatePrice } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import StatusDropdown from "./StatusDropdown";
+import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
+import { Terminal } from "lucide-react";
 
 interface pageProps {
 
@@ -23,7 +25,7 @@ const page: React.FC<pageProps> = async () => {
             isPaid: true,
             createdAt: { // sorting on the fly
                 // gte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000), // last 24 hours
-                gte: new Date(new Date().setDate(new Date().getDate() - 7)) // last 7 days
+                gte: new Date(new Date().setDate(new Date().getDate() - 70)) // last 7 days
             },
         },
         orderBy: { // ordering on the fly
@@ -66,8 +68,6 @@ const page: React.FC<pageProps> = async () => {
     const WEEKLY_GOAL = 500;
     const MONTHLY_GOAL = 2500;
 
-
-
     return (
         <div className='flex min-h-screen w-full bg-muted/40 ' >
             <div className="max-w-7xl w-full mx-auto flex flex-col sm:gap-4 sm:py-4">
@@ -102,7 +102,7 @@ const page: React.FC<pageProps> = async () => {
                             <CardHeader className="pb-2 ">
                                 <CardDescription>Last month</CardDescription>
                                 <CardTitle className="text-4xl">
-                                    {formatePrice(calculatedLastWeekRevenue)}
+                                    {formatePrice(calculatedLastMonthRevenue)}
                                 </CardTitle>
                             </CardHeader>
 
@@ -141,7 +141,7 @@ const page: React.FC<pageProps> = async () => {
                         </TableHeader>
 
                         {/* t Body */}
-                        <TableBody>
+                        <TableBody >
                             {orders?.map((order) => (
                                 <TableRow key={order.id} className="bg-accent " >
 
@@ -168,10 +168,22 @@ const page: React.FC<pageProps> = async () => {
                                     </TableCell>
 
                                 </TableRow>
-                            ))}
+                            ))
+
+                            }
+
+
                         </TableBody>
                     </Table>
 
+                    {orders?.length === 0 && <Alert variant={"destructive"}>
+                        <Terminal className="h-4 w-4" />
+                        <AlertTitle>No orders Found!</AlertTitle>
+                        <AlertDescription>
+                            Zero orders to show of this month.
+                        </AlertDescription>
+                    </Alert>
+                    }
                 </div>
             </div>
         </div>
