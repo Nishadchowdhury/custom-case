@@ -25,17 +25,21 @@ const StatusDropdown: React.FC<pageProps> = ({ id, orderStatus }) => {
 
    const router = useRouter()
 
-   const { mutate } = useMutation({
+   const { mutate, isPending } = useMutation({
       mutationKey: ["change-order-status"],
       mutationFn: changeOrderStatus,
       onSuccess: () => router.refresh()
    })
 
+
    return <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger
+         disabled={isPending}
+      >
          <Button
             variant='outline'
             className="w-52 flex justify-between items-center"
+            disabled={isPending}
          >
             {LABEL_MAP[orderStatus]}
             <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
@@ -44,7 +48,9 @@ const StatusDropdown: React.FC<pageProps> = ({ id, orderStatus }) => {
 
       <DropdownMenuContent className="p-0" >
          {Object.keys(OrderStatus).map((status) => (
-            <DropdownMenuItem key={status}
+            <DropdownMenuItem
+               disabled={isPending}
+               key={status}
                className={cn('flex text-sm gap-1 items-center p-2.5 cursor-default hover:bg-zinc-100',
                   {
                      'bg-zinc-100': orderStatus === status

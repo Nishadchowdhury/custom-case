@@ -25,7 +25,7 @@ const page: React.FC<pageProps> = async () => {
             isPaid: true,
             createdAt: { // sorting on the fly
                 // gte: new Date(new Date().getTime() - 24 * 60 * 60 * 1000), // last 24 hours
-                gte: new Date(new Date().setDate(new Date().getDate() - 70)) // last 7 days
+                gte: new Date(new Date().setDate(new Date().getDate() - 7)) // last 7 days
             },
         },
         orderBy: { // ordering on the fly
