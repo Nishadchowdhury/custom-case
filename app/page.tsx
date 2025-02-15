@@ -7,11 +7,17 @@ import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, Check, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import ItemsOptions from "../components/custom/ItemsOptionsDrawer";
+import MaintenanceModal from "../components/custom/MaintenanceModal";
 
 export default function Home() {
   return (
 
     <div className="bg-slate-50">
+
+      {/*  */}
+      <MaintenanceModal /> 
+
       <section>
         <MaxWidthWrapper
           className="pb-24 pt-10 lg:grid lg:grid-cols-3 sm:pb-32 lg:gap-x-0 xl:gap-x-8 lg:pt-24 xl:pt-32 lg:pb-52"
@@ -299,12 +305,12 @@ export default function Home() {
             </li>
 
             <div className="flex justify-center ">
-              <Link className={buttonVariants({
-                size: "lg",
-                className: "mx-auto mt-8 "
-              })} href={"/configure/upload"}>
-                create your case now <ArrowRight className="size-4 ml-1.5 " />
-              </Link>
+              <ItemsOptions
+                IsFromServerComp={true}
+                triggerText="create your case now"
+                size="lg"
+                className="mx-auto mt-8"
+              />
 
             </div>
 

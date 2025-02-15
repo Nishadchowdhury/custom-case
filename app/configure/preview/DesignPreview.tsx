@@ -20,7 +20,8 @@ import { createCheckoutSession } from './actions';
 
 interface pageProps {
     configuration: Configuration
-}
+};
+
 const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
     const { toast } = useToast()
     const router = useRouter()

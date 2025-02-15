@@ -1,8 +1,10 @@
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-import { buttonVariants } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import ItemsOptions from "./ItemsOptionsDrawer";
+// import { useState } from "react";
 
 interface pageProps {
 
@@ -11,12 +13,15 @@ const Navbar: React.FC<pageProps> = async () => {
 
 
     const { getUser } = getKindeServerSession() // getting the user
+    // const [isOptionDrawerOpen, setIsOptionDrawerOpen] = useState<boolean>(false);
 
     const user = await getUser();
     const isAdmin = user?.email === process.env.ADMIN_EMAIL;
 
     return (
         <nav className='sticky z-[100] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all' >
+
+
             <MaxWidthWrapper >
                 <div className="flex h-14 items-center justify-between border-b border-zinc-200 ">
                     <Link
@@ -52,14 +57,11 @@ const Navbar: React.FC<pageProps> = async () => {
                                     </Link> : null
                                 }
                                 <div className="h-8 w-px bg-zinc-200 hidden sm:block " />
-                                <Link href={"/configure/upload"}
-                                    className={buttonVariants({
-                                        size: "sm",
-                                        className: "hidden sm:flex items-center gap-1"
-                                    })} >
-                                    Create case
-                                    <ArrowRight className="ml-1.5 size-5" />
-                                </Link>
+
+                                <ItemsOptions
+                                    IsFromServerComp={true}
+                                    triggerText="Create Case"
+                                />
 
                             </>
                             :
@@ -83,14 +85,14 @@ const Navbar: React.FC<pageProps> = async () => {
 
                                 <div className="h-8 w-px bg-zinc-200 hidden sm:block " />
 
-                                <Link href={"/configure/upload"}
+                                <Button
                                     className={buttonVariants({
                                         size: "sm",
                                         className: "hidden sm:flex items-center gap-1"
                                     })} >
                                     Create case
                                     <ArrowRight className="ml-1.5 size-5" />
-                                </Link>
+                                </Button>
                             </>
                         }
                     </div>

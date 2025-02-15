@@ -1,5 +1,9 @@
 shift + alt + O = get rid of all the unused imports.
 
+------------------------------------------Advance Typescript------------------------------------------
+1.  inhering types from other interfaces we can use extends but for a particular interface we can use Pick<Interface, "keyName">
+
+
 getting the cropped image through the canvas. 5:25:00
 
 There Is X steps to get the cropped image
@@ -173,32 +177,4 @@ There Is X steps to get the cropped image
 
 1.lib>utils.ts file create a function like bellow.
 
-export function constructMetadata({
-title = "CustomCase - custom high-quality phone cases",
-description = "Create custom high-quality phone cases in seconds",
-image = "/thumbnail.png",
-icons = "/favicon.ico",
-}: {
-title?: string;
-description?: string;
-image?: string;
-icons?: string;
-} = {}): Metadata {
-return {
-title,
-description,
-openGraph: {
-title,
-description,
-images: [{ url: image }],
-},
-twitter: {
-card: "summary_large_image",
-title,
-description,
-images: [image],
-creator: "@NishadChowdhuri",
-},
-icons,
-};
-}
+
