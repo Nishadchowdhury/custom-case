@@ -4,7 +4,7 @@ import { Progress } from '@/components/ui/progress'
 import { useToast } from '@/hooks/use-toast'
 import { useUploadThing } from '@/lib/uploadthing'
 import { cn } from '@/lib/utils'
-import { Image, Loader2, MousePointerSquareDashed } from 'lucide-react'
+import { Image as LucidImage, Loader2, MousePointerSquareDashed } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import Dropzone, { FileRejection } from 'react-dropzone'
@@ -18,12 +18,13 @@ export default function Page() {
     const router = useRouter()
 
     // the hook we got from the react helper 
+
     const { startUpload, isUploading } = useUploadThing("imageUploader", {
         onClientUploadComplete: ([data]) => {
             const { configId, } = data.serverData;
 
             startTransition(() => {
-                router.push(`/configure/design?id=${configId}`);
+                router.push(`/configure/design?id=${configId}&type=card`);
             })
 
         },
@@ -88,7 +89,8 @@ export default function Page() {
                                 ) : (isUploading || isPending) ? (
                                     <Loader2 className='animate-spin size-6 text-zinc-500 mb-2 ' />
                                 ) : (
-                                    <Image className='size-6 text-zinc-500 mb-2 ' />
+
+                                    <LucidImage className='size-6 text-zinc-500 mb-2 ' />
                                 )}
                                 <div className='flex flex-col justify-center mb-2 text-sm text-zinc-700 ' >
                                     {isUploading

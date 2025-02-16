@@ -14,6 +14,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "../../lib/utils";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 
 
@@ -28,6 +29,7 @@ interface pageProps extends Pick<ButtonProps, "size"> {
 
 const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp, triggerText, className, size = "sm" }) => {
 
+
     const [isOpenState, setIsOpenState] = useState(false)
 
 
@@ -41,6 +43,8 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
         // }
 
     }
+
+
 
     return <Drawer
         open={isOpen || isOpenState}
@@ -61,34 +65,58 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
         </DrawerTrigger>
 
         <DrawerContent className="" >
-            <DrawerHeader>
-                <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+            <DrawerHeader className="flex items-center flex-col" >
+                <DrawerTitle>Choose what you want to create</DrawerTitle>
                 <DrawerDescription>This action cannot be undone.</DrawerDescription>
             </DrawerHeader>
 
-            <div className="mx-auto flex gap-4" >
-                <Link href="/"
+            <div className="mx-auto my-5 flex gap-4  " >
+                <Link href={"/configure/upload/card"}
                     className={buttonVariants({
                         variant: "ghost",
-                        className: "!size-48  border-primary/40"
+                        className: "!size-48 border border-primary/40 flex flex-col"
                     })}
                 >
-
                     <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        strokeWidth="0"
+                        viewBox="0 0 512 512"
+                        height="200" width="200"
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 576 512"
+
                         className="text-primary"
                     >
-                        <path fill="currentColor" d="M64 32C28.7 32 0 60.7 0 96v32h576V96c0-35.3-28.7-64-64-64zm512 192H0v192c0 35.3 28.7 64 64 64h448c35.3 0 64-28.7 64-64zM112 352h64c8.8 0 16 7.2 16 16s-7.2 16-16 16h-64c-8.8 0-16-7.2-16-16s7.2-16 16-16m112 16c0-8.8 7.2-16 16-16h128c8.8 0 16 7.2 16 16s-7.2 16-16 16H240c-8.8 0-16-7.2-16-16" />
-                    </svg>
+                        <rect
+                            width="416"
+                            height="320"
+                            x="48"
+                            y="96"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="26"
+                            rx="56"
+                            ry="56"
 
+                        />
+                        <path
+                            fill="none"
+                            strokeLinejoin="round"
+                            strokeWidth="30"
+                            d="M48 192h416M128 300h48v20h-48z"
+                        />
+                    </svg>
+                    <span className="text-primary" >
+                        Create a card
+                    </span>
 
                 </Link>
 
-                <Link href="/"
+                <Link href={"/configure/upload/case"}
                     className={buttonVariants({
                         variant: "ghost",
-                        className: "!size-48  border-primary/40"
+                        className: "!size-48 border border-primary/40 flex flex-col"
                     })}
                 >
 
@@ -99,19 +127,21 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
                     </svg>
 
 
+                    <span className="text-primary" >
+                        Create a case
+                    </span>
+
                 </Link>
             </div>
-
             <DrawerFooter>
-                <Button>Submit</Button>
-                <DrawerClose>
-                    <Button variant="outline">Cancel</Button>
-                </DrawerClose>
+
             </DrawerFooter>
+
         </DrawerContent>
+
     </Drawer>
 
 
 }
 
-export default ItemsOptions;
+export default dynamic(() => Promise.resolve(ItemsOptions), { ssr: false });

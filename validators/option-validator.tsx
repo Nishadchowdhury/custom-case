@@ -18,6 +18,21 @@ export const COLORS = [
         value: "rose",
         tw: "rose-950"
     },
+    {
+        label: "Sky",
+        value: "sky",
+        tw: "sky-600"
+    },
+    {
+        label: "Green",
+        value: "green",
+        tw: "green-700"
+    },
+    {
+        label: "Orange",
+        value: "orange",
+        tw: "orange-800"
+    },
 ] as const // as const => this will tell type script that this it a const and that's why it will show the exact values that are in it. check by removing the "as const" and hover over CONST then rewrite and check again.  
 
 export const MODELS = {
@@ -90,3 +105,20 @@ export const FINISHES = {
         },
     ],
 } as const
+
+
+
+export const RATIOS = {
+    case: {
+        w: 896,
+        h: 1831,
+        src: "/phone-template.png"
+    },
+    card: {
+        w: 1000,
+        h: 630,
+        src: "/Large-chip-atm.png"
+    }
+} as const
+
+

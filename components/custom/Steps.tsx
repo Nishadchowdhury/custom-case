@@ -1,28 +1,36 @@
 "use client"
 
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
-const STEPS = [
-    {
-        name: "Step 1: Add image",
-        description: "Choose an image for your case",
-        url: "/upload"
-    },
-    {
-        name: "Step 2: Customize design",
-        description: "Make the case yours",
-        url: "/design"
-    },
-    {
-        name: "Step 3: Summery",
-        description: "Review your final design",
-        url: "/preview"
-    },
-]
 
 const Steps: React.FC = () => {
-    const pathname = usePathname()
+
+
+    const searchParams = useSearchParams();
+
+    const type = searchParams.get("type") || ''
+
+    const STEPS = [
+        {
+            name: "Step 1: Add image",
+            description: `Choose an image for your ${type}`,
+            url: "/upload"
+        },
+        {
+            name: "Step 2: Customize design",
+            description: `Make the ${type} yours`,
+            url: "/design"
+        },
+        {
+            name: "Step 3: Summery",
+            description: "Review your final design",
+            url: "/preview"
+        },
+    ]
+
+
+    const pathname = usePathname();
     return <ol className="rounded-md bg-white bg-opacity-75 lg:flex lg:rounded-none lg:border-1 lg:border-x lg:border-gray-200 ">
         {
 

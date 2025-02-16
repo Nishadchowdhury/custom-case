@@ -7,9 +7,9 @@ interface pageProps {
         [key: string]: string | string[] | undefined;
     }
 }
-const page: React.FC<pageProps> = async ({ searchParams }) => {
+const page: React.FC<pageProps> = async ({ searchParams }) => { // server components by default accepts searchParams as props.
     //make db call from the server through the server component.
-    const { id } = searchParams;
+    const { id, type } = searchParams;
 
     if (!id || typeof id !== 'string') {
         return notFound();
@@ -27,7 +27,7 @@ const page: React.FC<pageProps> = async ({ searchParams }) => {
 
     const { imageUrl, width, height } = configuration;
 
-    return <DesignConfiscator configId={configuration.id} imageDimensions={{ width, height }} imageUrl={imageUrl} />
+    return <DesignConfiscator configId={configuration.id} imageDimensions={{ width, height }} imageUrl={imageUrl} type={type} />
 
 }
 

@@ -7,7 +7,7 @@ import NextImage from 'next/image'
 import { Rnd } from 'react-rnd'
 import { RadioGroup } from '@headlessui/react'
 import { useRef, useState } from "react";
-import { COLORS, FINISHES, MATERIALS, MODELS } from "@/validators/option-validator";
+import { COLORS, FINISHES, MATERIALS, MODELS, RATIOS } from "@/validators/option-validator";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -25,14 +25,18 @@ interface pageProps {
     imageDimensions: {
         width: number;
         height: number;
-    }
+    },
+    type: string | string[] | undefined;
 
 }
 
-const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions }) => {
+const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "card" }) => {
     const { startUpload, isUploading, } = useUploadThing("imageUploader");
     const { toast } = useToast();
     const router = useRouter()
+
+
+    const envCheck = process.env.NODE_ENV === "production";
 
     const { mutate: saveConfig, isPending } = useMutation({
         mutationKey: ['save-config'],
@@ -205,21 +209,31 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
     }
 
+    const aspects = {
+        w: type === "case" ? RATIOS.case.w : RATIOS.card.w,
+        h: type === "case" ? RATIOS.case.h : RATIOS.card.h
+    }
+
     return (
-        <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 ' >
+        <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 '>
             <div
                 ref={containerRef}
                 className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-                <div className="relative w-60 bg-opacity-50 pointer-events-none aspect-[896/1831] _3:58:00_  ">
+                <div className={cn("relative bg-opacity-50 pointer-events-none  _3:58:00_ ",
+                    `aspect-[${aspects.w}/${aspects.h}]`,
+                    type === 'case' ? 'w-60' : "w-96"
+                )}>
                     <AspectRatio
                         ref={phoneCaseRef}
-                        ratio={896 / 1831} //the ratio of the phone png we're gonna use
-                        className="pointer-events-none relative z-50 aspect-[896/1831] w-full"
+                        ratio={aspects.w / aspects.h} //the ratio of the phone png we're gonna use
+                        className={cn("pointer-events-none relative z-50 w-full ",
+                            `aspect-[${aspects.w}/${aspects.h}]`
+                        )}
                     >
                         <NextImage
                             alt="phone Image"
-                            src={'/phone-template.png'}
+                            src={type === 'case' ? RATIOS.case.src : RATIOS.card.src}
                             className="pointer-events-none z-50 select-none"
                             fill
                         />
@@ -266,13 +280,21 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                 >
                     <div className="relative w-full h-full ">
-                        <NextImage
-                            src={imageUrl}
-                            fill
-                            alt="your Image"
-                            className="pointer-events-none"
-                            
-                        />
+                        {
+                            envCheck ? <NextImage
+                                src={imageUrl}
+                                fill
+                                alt="your Image"
+                                className="pointer-events-none"
+
+                            />
+                                :
+                                <img
+                                    src={imageUrl}
+                                    alt="your Image"
+                                    className="pointer-events-none"
+                                />
+                        }
                     </div>
                 </Rnd>
 
@@ -291,7 +313,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                     <div
                         className="px-8 pb-12 pt-8"
                     >
-                        <h2>Customize your case</h2>
+                        <h2>Customize your {type}</h2>
 
                         <div
                             className="w-full h-px bg-zinc-200 my-6 "
@@ -476,7 +498,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 })}
                             >
                                 Continue
-                                <ArrowRight className="size-4 ml-1.5 inline" />
+                                <ArrowRight className="size-4 ml-1.5 inline " />
                             </Button>
                         </div>
                     </div>
@@ -489,7 +511,31 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 }
 
-{/* <h1 className="bg-zinc-900 border-zinc-900 bg-blue-950 border-blue-950 bg-rose-950 border-rose-950 hidden" /> */ }
+{/*
+
+these are the predicted dynamic classes of tailwind css.
+
+<h1 className=
+"
+bg-zinc-900 
+bg-blue-950 
+bg-rose-950 
+bg-sky-600
+bg-green-700
+bg-orange-800
+border-zinc-900 
+border-blue-950 
+border-rose-950   
+border-sky-600   
+border-green-700   
+border-orange-800   
+
+
+hidden" 
+
+/>
+
+*/ }
 
 export default DesignConfiscator;
 

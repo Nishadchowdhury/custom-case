@@ -11,6 +11,7 @@ import {
 import { Button, buttonVariants } from "../ui/button";
 import { Globe } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 interface pageProps {
 
@@ -21,7 +22,7 @@ const MaintenanceModal: React.FC<pageProps> = () => {
     // return <></>
 
     return <Dialog
-        defaultOpen={true}
+        defaultOpen={false}
     >
         <DialogContent className=" flex justify-center items-center flex-col  rounded-md w-11/12 md:w-full " >
 
@@ -70,4 +71,4 @@ const MaintenanceModal: React.FC<pageProps> = () => {
 
 }
 
-export default MaintenanceModal;
+export default dynamic(() => Promise.resolve(MaintenanceModal), { ssr: false });
