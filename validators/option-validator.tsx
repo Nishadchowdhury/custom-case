@@ -38,7 +38,7 @@ export const COLORS = [
 export const MODELS = {
     name: "models", // name is to recognize the state.
     options: [
-        {
+        { //phone's models
             label: "iPhone X",
             value: "iphonex"
         },
@@ -84,7 +84,20 @@ export const MATERIALS = { // 4:55:0
             value: 'polycarbonate',
             description: "Scratch-resistance coating.",
             price: PRODUCTS_PRICES.material.polycarbonate
+        }, // for phones 
+        {
+            label: 'Plastic PVC',
+            value: 'plasticpvc',
+            description: undefined,
+            price: PRODUCTS_PRICES.material.plasticpvc
+
         },
+        {
+            label: 'Stainless Steel',
+            value: 'stainlesssteel',
+            description: "Premium and Light-reflective",
+            price: PRODUCTS_PRICES.material.stainlesssteel
+        }, //for cards
     ],
 } as const
 
@@ -102,7 +115,19 @@ export const FINISHES = {
             value: 'textured',
             description: 'Soft grippy texture',
             price: PRODUCTS_PRICES.finish.textured,
+        },//for phones
+        {
+            label: 'Glossy Finish',
+            value: 'glossy',
+            description: undefined,
+            price: PRODUCTS_PRICES.finish.glossy,
         },
+        {
+            label: 'Antique Still',
+            value: 'antique',
+            description: "Antique semi-smooth texture",
+            price: PRODUCTS_PRICES.finish.antique,
+        },// for cards
     ],
 } as const
 
