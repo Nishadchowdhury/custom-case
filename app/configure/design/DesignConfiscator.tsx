@@ -30,13 +30,14 @@ interface pageProps {
 
 }
 
-const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "card" }) => {
-    const { startUpload, isUploading, } = useUploadThing("imageUploader");
+const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "case" }) => {
+    const { startUpload, isUploading } = useUploadThing("imageUploader");
     const { toast } = useToast();
     const router = useRouter()
 
 
     const envCheck = process.env.NODE_ENV === "production";
+    const isCase = type === "case"
 
     const { mutate: saveConfig, isPending } = useMutation({
         mutationKey: ['save-config'],
@@ -65,8 +66,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
         {
             color: COLORS[0],
             model: MODELS.options[0],
-            material: MATERIALS.options[0],
-            finish: FINISHES.options[0]
+            material: MATERIALS.options[isCase ? 0 : 2],
+            finish: FINISHES.options[isCase ? 0 : 2]
         }
     )
 
@@ -81,7 +82,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     })
 
 
-    const phoneCaseRef = useRef<HTMLDivElement>(null)
+    const phoneCaseRef = useRef<HTMLDivElement>(null) // im keeping the same as it was, this will help me later to understand the doc later.
     const containerRef = useRef<HTMLDivElement>(null)
 
     async function saveConfiguration() {
@@ -114,8 +115,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             // actualX and actualY relative to the case not the container. 
 
             const canvas = document.createElement('canvas') // create a canvas to print things.
-            canvas.width = width
-            canvas.height = height
+            canvas.width = width // proving the dimensions of the canvas as the structure ot the item
+            canvas.height = height // proving the dimensions of the canvas as the structure ot the item
 
             const ctx = canvas.getContext('2d') // context allows to modify the canvas and draw things.
 
@@ -139,8 +140,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             const base64data = base64.split(',')[1] // [info of base64, theBase64String] A Base64-encoded string that represents binary image data.
             const blob = base64ToBlob(base64data, "image/png") // turning into a blob object
             const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
+            
+            return console.log(base64);
+            
             // 6.00.00
-
             await startUpload([file], {
                 configId
             })
@@ -324,6 +327,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         >
                             <div className="flex flex-col gap-6 " >
 
+                                {/* colors options */}
                                 <RadioGroup
                                     value={options.color}
                                     onChange={(value) => {
@@ -362,40 +366,47 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                         }
                                     </div>
                                 </RadioGroup>
+
+
+                                {/* Model options only for phones */}
                                 <div className="relative flex flex-col gap-3 w-full ">
-                                    <Label>Model</Label>
-                                    <DropdownMenu >
-                                        <DropdownMenuTrigger asChild /*the child will be printed here*/ >
-                                            <Button
-                                                variant={'outline'}
-                                                role="combobox"
-                                                className="w-full justify-between"
-                                            >
-                                                {options.model.label}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
-                                            </Button>
-                                        </DropdownMenuTrigger>
+                                    {isCase && (
+                                        <>
+                                            <Label>Model</Label>
+                                            <DropdownMenu >
+                                                <DropdownMenuTrigger asChild /*the child will be printed here*/ >
+                                                    <Button
+                                                        variant={'outline'}
+                                                        role="combobox"
+                                                        className="w-full justify-between"
+                                                    >
+                                                        {options.model.label}
+                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
 
-                                        <DropdownMenuContent >
-                                            {MODELS.options.map((model) => (
-                                                <DropdownMenuItem
-                                                    key={model.label}
-                                                    className={cn('flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100', {
-                                                        "bg-zinc-100": model.label === options.model.label
-                                                    })}
-                                                    onClick={() => {
-                                                        setOptions((prev) => ({ ...prev, model }))
-                                                    }}
-                                                >
-                                                    <Check className={cn('mr-2 h-4 w-4 ',
-                                                        model.label === options.model.label ? "opacity-100" : "opacity-0"
-                                                    )} />
-                                                    {model.label}
-                                                </DropdownMenuItem>
-                                            ))}
-                                        </DropdownMenuContent>
+                                                <DropdownMenuContent >
+                                                    {MODELS.options.map((model) => (
+                                                        <DropdownMenuItem
+                                                            key={model.label}
+                                                            className={cn('flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100', {
+                                                                "bg-zinc-100": model.label === options.model.label
+                                                            })}
+                                                            onClick={() => {
+                                                                setOptions((prev) => ({ ...prev, model }))
+                                                            }}
+                                                        >
+                                                            <Check className={cn('mr-2 h-4 w-4 ',
+                                                                model.label === options.model.label ? "opacity-100" : "opacity-0"
+                                                            )} />
+                                                            {model.label}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuContent>
 
-                                    </DropdownMenu>
+                                            </DropdownMenu>
+                                        </>)
+                                    }
 
                                     {
                                         [MATERIALS, FINISHES].map(({ name, options: selectableOptions }) => (
@@ -414,7 +425,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                                 </Label>
                                                 <div className="mt-3 space-y-4" >
                                                     {
-                                                        selectableOptions.map((option) => (
+                                                        selectableOptions.slice(isCase ? 0 : 2, isCase ? 2 : 4).map((option) => (
                                                             <RadioGroup.Option
 
                                                                 key={option.value}
@@ -440,7 +451,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                                                                 <RadioGroup.Description as='span'
                                                                                     className={'text-gray-500'}
                                                                                 >
-                                                                                    <span className="block sm:inline" >
+                                                                                    <span className="block sm:inline whitespace-nowrap" >
                                                                                         {option.description}
                                                                                     </span>
                                                                                 </RadioGroup.Description>
