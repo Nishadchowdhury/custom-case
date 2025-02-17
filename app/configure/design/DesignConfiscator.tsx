@@ -2,7 +2,7 @@
 import HandleComponent from "@/components/custom/HandleComponent";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn, formatePrice } from "@/lib/utils";
+import { cn, formatePrice, getCardType } from "@/lib/utils";
 import NextImage from 'next/image'
 import { Rnd } from 'react-rnd'
 import { RadioGroup } from '@headlessui/react'
@@ -57,23 +57,39 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     })
 
 
+
+    const cardType = getCardType(cardData.cardNumber);
+    console.log(cardData.cardNumber.length === 6, cardType.cardName);
     function cardDataSetter(value: string, type: "cardNumber" | "expireDate" | "cvv" | "cardHolderName") {
 
         const isNumber = Number(value)
         const isEmptyValue = value.trim() === "" //this will be the case when user try to clear the last number or string from the inputs
 
         switch (type) {
+
             case "cardNumber":
                 if (isEmptyValue) {
                     setCardData(prevState => ({ ...prevState, cardNumber: "" }));
                     break;
                 }
+
                 if (!isNumber) {
                     return toast({
                         title: "Only numbers are allowed",
                         variant: "destructive",
                         duration: 2000,
                     })
+                }
+
+                if (cardData.cardNumber.length === 6 && cardType.cardName === null) {
+                    toast({
+                        title: "Please provide a valid card number",
+                        variant: "destructive",
+                        duration: 2000,
+                    })
+                    setCardData(prevState => ({ ...prevState, cardNumber: "" }));
+
+                    break;
                 } else {
                     setCardData(prevState => ({ ...prevState, cardNumber: value }));
                 }
@@ -81,13 +97,45 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
             case "expireDate":
-                
-                setCardData(prevState => ({ ...prevState, expireDate: value }));
 
+                const day = value.slice(0, 2);
+                const year = value.slice(2, 4);
+                const thisYear = (new Date()).getFullYear().toString().slice(2, 4);
 
+                if (isEmptyValue) {
+                    setCardData(prevState => ({ ...prevState, expireDate: "" }));
+                    break;
+                }
+                if (!isNumber && !(day === "0")) {
+                    toast({
+                        title: "Only numbers are allowed",
+                        description: "Type which month is the expire date of the card!",
+                        variant: "destructive",
+                        duration: 2000,
+                    });
+                    break;
+                }
+
+                if (Number(day) > 12) {
+                    toast({
+                        title: "Please provide a valid month!",
+                        variant: "destructive",
+                        duration: 2000,
+                    })
+                    break;
+                } else if ((year.length === 2) && (Number(year) < Number(thisYear))) {
+                    toast({
+                        title: "Please provide an unexpired date!",
+                        variant: "destructive",
+                        duration: 2000,
+                    })
+                    break;
+                } else {
+                    setCardData(prevState => ({ ...prevState, expireDate: value }))
+                }
                 break;
 
-                
+
             case "cvv":
                 setCardData(prevState => ({ ...prevState, cvv: value }));
                 break;
@@ -98,7 +146,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
     }
 
-    // console.log(cardData);
+
 
     useEffect(() => {
         if (phoneCaseRef?.current) {
@@ -332,8 +380,11 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             }}
                             placeholder="XXXX"
                             autoComplete="off"
+
+
                             onChange={e => cardDataSetter(e.target.value, "cvv")}
                             value={cardData.cvv}
+                            maxLength={4}
                         />
 
                         {/* card number */}
@@ -353,12 +404,12 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                             onChange={e => cardDataSetter((e.target.value).replace(/\s+/g, ''), "cardNumber")} // this regex removes spaces
                             value={cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& ')} // this regex adds spaces after every 4 numbers
-                            maxLength={19}
+                            maxLength={(Number(cardType.numberLength) + 3)}
                         />
 
 
 
-                        {/* card details */}
+                        {/* card expire date */}
                         <div
                             style={{
                                 left: 48 + 'px',
@@ -383,9 +434,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 className="z-50 w-full bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
                                 placeholder="MM/YY"
                                 autoComplete="off"
+                                maxLength={5}
 
-                                onChange={e => cardDataSetter(e.target.value, "expireDate")}
-                                value={cardData.expireDate}
+                                onChange={e => cardDataSetter((e.target.value).replace(/\//g, ''), "expireDate")}
+                                value={cardData.expireDate.length <= 2 ? cardData.expireDate : [cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/')}
                             />
 
                             <input
