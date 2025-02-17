@@ -6,7 +6,7 @@ import { cn, formatePrice } from "@/lib/utils";
 import NextImage from 'next/image'
 import { Rnd } from 'react-rnd'
 import { RadioGroup } from '@headlessui/react'
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { COLORS, FINISHES, MATERIALS, MODELS, RATIOS } from "@/validators/option-validator";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { saveConfig as _saveConfig, SaveConfigArgs } from "./action";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 interface pageProps {
     configId: string;
@@ -33,8 +34,79 @@ interface pageProps {
 const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "case" }) => {
     const { startUpload, isUploading } = useUploadThing("imageUploader");
     const { toast } = useToast();
-    const router = useRouter()
+    const router = useRouter();
 
+    const phoneCaseRef = useRef<HTMLDivElement>(null) // im keeping the same as it was, this will help me later to understand the doc later.
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    const [caseDimensions, setCaseDimensions] = useState({
+        width: 0,
+        height: 0
+    });
+
+    const [cardData, setCardData] = useState<{
+        cardNumber: string;
+        expireDate: string;
+        cvv: string;
+        cardHolderName: string;
+    }>({
+        cardNumber: "",
+        expireDate: "",
+        cvv: "",
+        cardHolderName: "",
+    })
+
+
+    function cardDataSetter(value: string, type: "cardNumber" | "expireDate" | "cvv" | "cardHolderName") {
+
+        const isNumber = Number(value)
+        const isEmptyValue = value.trim() === "" //this will be the case when user try to clear the last number or string from the inputs
+
+        switch (type) {
+            case "cardNumber":
+                if (isEmptyValue) {
+                    setCardData(prevState => ({ ...prevState, cardNumber: "" }));
+                    break;
+                }
+                if (!isNumber) {
+                    return toast({
+                        title: "Only numbers are allowed",
+                        variant: "destructive",
+                        duration: 2000,
+                    })
+                } else {
+                    setCardData(prevState => ({ ...prevState, cardNumber: value }));
+                }
+                break;
+
+
+            case "expireDate":
+                
+                setCardData(prevState => ({ ...prevState, expireDate: value }));
+
+
+                break;
+
+                
+            case "cvv":
+                setCardData(prevState => ({ ...prevState, cvv: value }));
+                break;
+            case "cardHolderName":
+                setCardData(prevState => ({ ...prevState, cardHolderName: value }));
+                break;
+        }
+
+    }
+
+    // console.log(cardData);
+
+    useEffect(() => {
+        if (phoneCaseRef?.current) {
+            const { width, height } = phoneCaseRef.current.getBoundingClientRect()
+            setCaseDimensions({ width, height })
+        }
+
+    }, [phoneCaseRef])
 
     const envCheck = process.env.NODE_ENV === "production";
     const isCase = type === "case"
@@ -82,13 +154,13 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     })
 
 
-    const phoneCaseRef = useRef<HTMLDivElement>(null) // im keeping the same as it was, this will help me later to understand the doc later.
-    const containerRef = useRef<HTMLDivElement>(null)
 
     async function saveConfiguration() {
         // if (!phoneCaseRef.current) return // to get rid from the error of TS cz we destructured "phoneCaseRef.current?.getBoundingClientRect()" but if the ref.current is undefined then the user won't know what happened here and that's why we need to use other way.
 
         try {
+
+            /*this is the portion of calculating the sizes and dimensions of the structures of card and case. */
             // const { } = phoneCaseRef.current?.getBoundingClientRect() // it gives the exact coordinates 
             const {// taking the position of case
                 left: caseLeft, // distance from the window to the element.
@@ -97,7 +169,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                 height // rendered caseHeight 
                 // this height and width we can use to create the canvas 
             } = phoneCaseRef.current!.getBoundingClientRect() // we're telling TS that we're sure about that we will get the data from it by replacing "?" with "!" here.
-
+            console.log({ width, height });
             const { // taking the position of outer container
                 left: containerLeft,
                 top: containerTop,
@@ -113,6 +185,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             const actualX = renderedPosition.x/*position between the image and container X*/ - leftOffset
             const actualY = renderedPosition.y - topOffset /*distance between container and case eg: x100*/
             // actualX and actualY relative to the case not the container. 
+
+            /*this is the end of portion of calculating the sizes and dimensions of the structures of card and case. */
+
+
 
             const canvas = document.createElement('canvas') // create a canvas to print things.
             canvas.width = width // proving the dimensions of the canvas as the structure ot the item
@@ -140,9 +216,9 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             const base64data = base64.split(',')[1] // [info of base64, theBase64String] A Base64-encoded string that represents binary image data.
             const blob = base64ToBlob(base64data, "image/png") // turning into a blob object
             const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
-            
+
             return console.log(base64);
-            
+
             // 6.00.00
             await startUpload([file], {
                 configId
@@ -217,6 +293,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
         h: type === "case" ? RATIOS.case.h : RATIOS.card.h
     }
 
+
     return (
         <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 '>
             <div
@@ -230,16 +307,103 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                     <AspectRatio
                         ref={phoneCaseRef}
                         ratio={aspects.w / aspects.h} //the ratio of the phone png we're gonna use
-                        className={cn("pointer-events-none relative z-50 w-full ",
+                        className={cn("pointer-events-none relative z-40 w-full font-sans text-white",
                             `aspect-[${aspects.w}/${aspects.h}]`
                         )}
                     >
                         <NextImage
                             alt="phone Image"
                             src={type === 'case' ? RATIOS.case.src : RATIOS.card.src}
-                            className="pointer-events-none z-50 select-none"
+                            className="pointer-events-none z-40 select-none"
                             fill
                         />
+
+                        {/* CVV card security number */}
+                        <input
+                            type="text"
+                            name="cvv"
+                            id=""
+                            className="z-50 bg-transparent h-8 pointer-events-auto focus:outline-none focus:border-none absolute "
+                            style={{
+                                right: 8,
+                                top: caseDimensions.height / 3.7 + 'px',
+                                width: caseDimensions.width / 7 + 'px',
+                                height: caseDimensions.height / 8 + 'px'
+                            }}
+                            placeholder="XXXX"
+                            autoComplete="off"
+                            onChange={e => cardDataSetter(e.target.value, "cvv")}
+                            value={cardData.cvv}
+                        />
+
+                        {/* card number */}
+                        <input
+                            type="text"
+                            id=""
+                            name="cardNumber"
+                            className="z-50 bg-transparent h-8 pointer-events-auto focus:outline-none focus:border-none absolute "
+                            style={{
+                                left: 48 + 'px',
+                                top: caseDimensions.height / 2.4 + 'px',
+                                width: caseDimensions.width / 2 + 'px',
+                                height: caseDimensions.height / 8 + 'px'
+                            }}
+                            placeholder="XXXX XXXX XXXX XXXX"
+                            autoComplete="off"
+
+                            onChange={e => cardDataSetter((e.target.value).replace(/\s+/g, ''), "cardNumber")} // this regex removes spaces
+                            value={cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& ')} // this regex adds spaces after every 4 numbers
+                            maxLength={19}
+                        />
+
+
+
+                        {/* card details */}
+                        <div
+                            style={{
+                                left: 48 + 'px',
+                                top: caseDimensions.height / 1.7 + 'px',
+                                width: caseDimensions.width / 2 + 'px',
+                            }}
+                            className=" absolute"
+                        >
+                            <span
+                                style={{
+                                    fontSize: '12px',
+                                    textAlign: 'start',
+                                    display: "block",
+                                }}
+                            >
+                                Valid Thru
+                            </span>
+                            <input
+                                type="text"
+                                name="date"
+                                id=""
+                                className="z-50 w-full bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
+                                placeholder="MM/YY"
+                                autoComplete="off"
+
+                                onChange={e => cardDataSetter(e.target.value, "expireDate")}
+                                value={cardData.expireDate}
+                            />
+
+                            <input
+                                type="text"
+                                name="name"
+                                id=""
+                                className="z-50 mt-2 w-full bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
+
+                                placeholder="Your Name"
+                                autoComplete="off"
+
+                                onChange={e => cardDataSetter(e.target.value, "cardHolderName")}
+                                value={cardData.cardHolderName}
+                            />
+
+                        </div>
+
+
                     </AspectRatio>
                     <div className="absolute z-40 inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px] 
                     shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
@@ -258,6 +422,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         height: imageDimensions.height / 4,
                         width: imageDimensions.width / 4
                     }}
+
                     lockAspectRatio
                     onResizeStop={(_, __, ref, ___, { x, y }) => { // _ means we won't use this var. 
                         setRenderedDimension({
@@ -279,7 +444,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         topLeft: <HandleComponent />
                     }}
 
-                    className="absolute z-20 hover: border-[3px] border-primary"
+                    className="absolute z-20 hover: border-[3px] border-primary !hidden"
 
                 >
                     <div className="relative w-full h-full ">
@@ -548,6 +713,7 @@ hidden"
 
 */ }
 
+// export default dynamic(() => Promise.resolve(DesignConfiscator), { ssr: false });
 export default DesignConfiscator;
 
 /* 

@@ -142,7 +142,7 @@ export const RATIOS = {
     card: {
         w: 1000,
         h: 630,
-        src: "/Large-chip-atm.png"
+        src: "/chip-atm.png"
     }
 } as const
 
