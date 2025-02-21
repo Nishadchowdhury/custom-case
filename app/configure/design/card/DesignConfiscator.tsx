@@ -16,7 +16,7 @@ import { BASE_PRICE } from "@/config/products";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { saveConfig as _saveConfig, SaveConfigArgs } from "./action";
+import { saveConfig as _saveConfig, SaveConfigArgs } from "../action";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
@@ -33,11 +33,20 @@ interface pageProps {
 
 const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "case" }) => {
     const { startUpload, isUploading } = useUploadThing("imageUploader");
+
     const { toast } = useToast();
     const router = useRouter();
 
-    const phoneCaseRef = useRef<HTMLDivElement>(null) // im keeping the same as it was, this will help me later to understand the doc later.
-    const containerRef = useRef<HTMLDivElement>(null)
+    const phoneCaseRef = useRef<HTMLDivElement>(null); // im keeping the same as it was, this will help me later to understand the doc later.
+    const containerRef = useRef<HTMLDivElement>(null);
+
+
+
+    const cvvRef = useRef<HTMLInputElement>(null);
+    const cardNumberRef = useRef<HTMLInputElement>(null);
+    const expireDateRef = useRef<HTMLInputElement>(null);
+    const holderNameRef = useRef<HTMLInputElement>(null);
+
 
     const [caseDimensions, setCaseDimensions] = useState({
         width: 0,
@@ -59,13 +68,14 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
     const cardType = getCardType(cardData.cardNumber);
-    console.log(cardData.cardNumber.length === 6, cardType.cardName);
-    function cardDataSetter(value: string, type: "cardNumber" | "expireDate" | "cvv" | "cardHolderName") {
+
+
+    function cardDataSetter(value: string, types: "cardNumber" | "expireDate" | "cvv" | "cardHolderName") {
 
         const isNumber = Number(value)
         const isEmptyValue = value.trim() === "" //this will be the case when user try to clear the last number or string from the inputs
 
-        switch (type) {
+        switch (types) {
 
             case "cardNumber":
                 if (isEmptyValue) {
@@ -137,10 +147,36 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
             case "cvv":
+
+                if (!isNumber && !isEmptyValue) {
+                    toast({
+                        title: "Only numbers are allowed",
+                        description: "Type the 4 digits number from your card.",
+                        variant: "destructive",
+                        duration: 2000,
+                    });
+                    break;
+                }
+
                 setCardData(prevState => ({ ...prevState, cvv: value }));
                 break;
+
+
             case "cardHolderName":
+
+                if (value.length > 22) {
+                    toast({
+                        title: "Try with a shorter name",
+                        description: "Turn your name in 22 characters",
+                        variant: "destructive",
+                        duration: 2000,
+                    });
+                    break;
+                }
+
+
                 setCardData(prevState => ({ ...prevState, cardHolderName: value }));
+
                 break;
         }
 
@@ -217,7 +253,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                 height // rendered caseHeight 
                 // this height and width we can use to create the canvas 
             } = phoneCaseRef.current!.getBoundingClientRect() // we're telling TS that we're sure about that we will get the data from it by replacing "?" with "!" here.
-            console.log({ width, height });
             const { // taking the position of outer container
                 left: containerLeft,
                 top: containerTop,
@@ -235,37 +270,94 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             // actualX and actualY relative to the case not the container. 
 
             /*this is the end of portion of calculating the sizes and dimensions of the structures of card and case. */
-
-
-
+            const canvasDimensions = {
+                width: width,
+                height: height
+            }
             const canvas = document.createElement('canvas') // create a canvas to print things.
-            canvas.width = width // proving the dimensions of the canvas as the structure ot the item
-            canvas.height = height // proving the dimensions of the canvas as the structure ot the item
-
+            canvas.width = canvasDimensions.width // proving the dimensions of the canvas as the structure ot the item
+            canvas.height = canvasDimensions.height // proving the dimensions of the canvas as the structure ot the item
             const ctx = canvas.getContext('2d') // context allows to modify the canvas and draw things.
 
-            const userImage = new Image(); // to get the image that we want to draw into the canvas.
-            userImage.crossOrigin = 'anonymous'; // it will prevent occurring any CORS errors during drawing the image into the canvas.
-            userImage.src = imageUrl;
-            await new Promise((resolve, reject) => (userImage.onload = resolve)) // waiting to load the image from the url into the userImage var.
-            // now the image is fully loaded and ready to be drawn into the canvas.
 
-            ctx?.drawImage(
-                userImage,
-                actualX, // calculated position from the visual elements
-                actualY,
-                renderedDimension.width, // final sizes of the image (dimensions)
-                renderedDimension.height,
-            )
+            if (ctx) {
+
+
+
+                if (type === "card") {
+
+                    const chipPng = new Image();
+                    chipPng.crossOrigin = "anonymous";
+                    chipPng.src = RATIOS.card.src;
+                    await new Promise((resolve) => (chipPng.onload = resolve))
+
+                    // drawing the image
+                    ctx?.drawImage(chipPng, 0, 0, canvas.width, canvas.height,)
+
+
+                    // printing cvv
+                    ctx.font = "16px Arial";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle"
+                    const { width: cvvElementWidth, height: cvvElementHeight } = cvvRef.current!.getBoundingClientRect()
+                    // Convert right to canvas x
+                    let x = (canvas.width - (canvas.width / 7.5));
+                    let y = (canvas.height / 3.45) + (cvvElementHeight / 1.7); // Keep top as it is
+                    ctx.fillText(cardData.cvv, x, y);
+
+
+
+                    // printing card Number
+                    ctx.font = "16px Arial";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle"
+                   
+                    // Convert right to canvas x
+                    x = (canvas.width - (canvas.width / 1.44));
+                    y = (canvas.height / 2.4); // Keep top as it is
+                    ctx.fillText(cardData.cardNumber, x, y);
+
+
+                    // printing expired date
+                    ctx.font = "12px Arial";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    // Convert right to canvas x
+                    x = (canvas.width - (canvas.width / 1.2));
+                    y = (canvas.height / 1.4); // Keep top as it is
+                    ctx.fillText([cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/'), x, y);
+
+                    ctx.font = "16px Arial";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle"
+                    const { width: edElementWidth, height: edElementHeight } = expireDateRef.current!.getBoundingClientRect()
+                    // Convert right to canvas x
+                    x = (canvas.width - (canvas.width / 1.2));
+                    y = (canvas.height / 1.4); // Keep top as it is
+                    ctx.fillText([cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/'), x, y);
+
+
+
+                }
+            }
+
 
             const base64 = canvas.toDataURL() // this is the best way to convert a canvas to a base64 =it returns> a really long string contains the image data in base64 formate. //Base64 is a way of encoding binary data (like images, audio files, or other binary formats) into a string  
             // presentation of base64 = iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12
+
+
 
             const base64data = base64.split(',')[1] // [info of base64, theBase64String] A Base64-encoded string that represents binary image data.
             const blob = base64ToBlob(base64data, "image/png") // turning into a blob object
             const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
 
+            navigator.clipboard.writeText(base64)
             return console.log(base64);
+
 
             // 6.00.00
             await startUpload([file], {
@@ -274,12 +366,12 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
         } catch (err) {
             // and if any error happens then we will trigger a toast to the user so that they can see what really happened.
+            console.log(err);
             toast({
                 title: "Something went wrong!!!",
                 description: "There was a problem saving your config, please try again.",
                 variant: "destructive",
             })
-
         }
     }
 
@@ -371,16 +463,15 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             type="text"
                             name="cvv"
                             id=""
-                            className="z-50 bg-transparent h-8 pointer-events-auto focus:outline-none focus:border-none absolute "
+                            className="z-50 bg-transparent pointer-events-auto focus:outline-none focus:border-none absolute "
                             style={{
-                                right: 8,
-                                top: caseDimensions.height / 3.7 + 'px',
-                                width: caseDimensions.width / 7 + 'px',
-                                height: caseDimensions.height / 8 + 'px'
+                                left: caseDimensions.width - (caseDimensions.width / 6),
+                                top: caseDimensions.height / 3.45 + 'px',
+                                width: caseDimensions.width / 10.1 + 'px',
                             }}
                             placeholder="XXXX"
                             autoComplete="off"
-
+                            ref={cvvRef}
 
                             onChange={e => cardDataSetter(e.target.value, "cvv")}
                             value={cardData.cvv}
@@ -392,16 +483,16 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             type="text"
                             id=""
                             name="cardNumber"
-                            className="z-50 bg-transparent h-8 pointer-events-auto focus:outline-none focus:border-none absolute "
+                            className="z-50 bg-transparent pointer-events-auto focus:outline-none focus:border-none absolute "
                             style={{
-                                left: 48 + 'px',
+                                left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
                                 top: caseDimensions.height / 2.4 + 'px',
                                 width: caseDimensions.width / 2 + 'px',
-                                height: caseDimensions.height / 8 + 'px'
                             }}
                             placeholder="XXXX XXXX XXXX XXXX"
                             autoComplete="off"
 
+                            ref={cardNumberRef}
                             onChange={e => cardDataSetter((e.target.value).replace(/\s+/g, ''), "cardNumber")} // this regex removes spaces
                             value={cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& ')} // this regex adds spaces after every 4 numbers
                             maxLength={(Number(cardType.numberLength) + 3)}
@@ -435,6 +526,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 placeholder="MM/YY"
                                 autoComplete="off"
                                 maxLength={5}
+                                ref={expireDateRef}
 
                                 onChange={e => cardDataSetter((e.target.value).replace(/\//g, ''), "expireDate")}
                                 value={cardData.expireDate.length <= 2 ? cardData.expireDate : [cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/')}
@@ -444,12 +536,12 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 type="text"
                                 name="name"
                                 id=""
-                                className="z-50 mt-2 w-full bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
-
+                                className="z-50 mt-2 uppercase bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
                                 placeholder="Your Name"
                                 autoComplete="off"
 
-                                onChange={e => cardDataSetter(e.target.value, "cardHolderName")}
+                                style={{ width: caseDimensions.width / 1.1 }}
+                                onChange={e => cardDataSetter((e.target.value).toUpperCase(), "cardHolderName")}
                                 value={cardData.cardHolderName}
                             />
 
@@ -529,6 +621,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none "
                         aria-hidden
                     />
+
 
                     <div
                         className="px-8 pb-12 pt-8"
@@ -717,13 +810,15 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                                 size={"sm"}
                                 className="w-full"
-                                onClick={() => saveConfig({
-                                    configId,
-                                    color: options.color.value,
-                                    finish: options.finish.value,
-                                    material: options.material.value,
-                                    model: options.model.value
-                                })}
+                                onClick={() => saveConfiguration(
+                                    // {
+                                    //     configId,
+                                    //     color: options.color.value,
+                                    //     finish: options.finish.value,
+                                    //     material: options.material.value,
+                                    //     model: options.model.value
+                                    // }
+                                )}
                             >
                                 Continue
                                 <ArrowRight className="size-4 ml-1.5 inline " />

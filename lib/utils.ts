@@ -52,9 +52,11 @@ export function getCardType(cardNumber: string) {
   let cardData: {
     numberLength: number;
     cardName: string | null;
+    cardPng: string;
   } = {
     numberLength: 16,
     cardName: null,
+    cardPng: ''
   };
 
   if (/^4/.test(firstDigits)) {
