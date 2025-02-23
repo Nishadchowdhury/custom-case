@@ -56,7 +56,7 @@ export function getCardType(cardNumber: string) {
   } = {
     numberLength: 16,
     cardName: null,
-    cardPng: ''
+    cardPng: "",
   };
 
   if (/^4/.test(firstDigits)) {
@@ -76,7 +76,7 @@ export function getCardType(cardNumber: string) {
     cardData.cardName = "discover";
   } else if (/^36|^38|^30[0-5]/.test(firstDigits)) {
     cardData.numberLength = 14;
-    cardData.cardName = "dinersClub";
+    cardData.cardName = "DinersClub"; //DinersClub
   } else if (/^35[2-8]/.test(firstDigits)) {
     cardData.numberLength = 16;
     cardData.cardName = "JCB";

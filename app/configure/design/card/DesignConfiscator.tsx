@@ -271,8 +271,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
             /*this is the end of portion of calculating the sizes and dimensions of the structures of card and case. */
             const canvasDimensions = {
-                width: width,
-                height: height
+                width: 1000,
+                height: 630
             }
             const canvas = document.createElement('canvas') // create a canvas to print things.
             canvas.width = canvasDimensions.width // proving the dimensions of the canvas as the structure ot the item
@@ -296,49 +296,59 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
                     // printing cvv
-                    ctx.font = "16px Arial";
+                    ctx.font = "48px Arial";
                     ctx.fillStyle = "white";
-                    ctx.textAlign = "center";
+                    ctx.textAlign = "start";
                     ctx.textBaseline = "middle"
                     const { width: cvvElementWidth, height: cvvElementHeight } = cvvRef.current!.getBoundingClientRect()
                     // Convert right to canvas x
                     let x = (canvas.width - (canvas.width / 7.5));
-                    let y = (canvas.height / 3.45) + (cvvElementHeight / 1.7); // Keep top as it is
+                    let y = (canvas.height / 3.45) // Keep top as it is
                     ctx.fillText(cardData.cvv, x, y);
 
 
 
+                    const { width: cnElementWidth, height: cnElementHeight } = cardNumberRef.current!.getBoundingClientRect()
                     // printing card Number
-                    ctx.font = "16px Arial";
+                    ctx.font = "54px Arial";
                     ctx.fillStyle = "white";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle"
-                   
-                    // Convert right to canvas x
-                    x = (canvas.width - (canvas.width / 1.44));
-                    y = (canvas.height / 2.4); // Keep top as it is
+                    ctx.textAlign = "start";
+                    ctx.textBaseline = "middle";
+                    x = (canvas.width - (canvas.width / 1.127));
+                    y = (canvas.height / 2.20); // Keep top as it is
                     ctx.fillText(cardData.cardNumber, x, y);
 
 
-                    // printing expired date
-                    ctx.font = "12px Arial";
+                    // printing expired date level
+                    ctx.font = "36px Arial";
                     ctx.fillStyle = "white";
-                    ctx.textAlign = "center";
+                    ctx.textAlign = "start";
                     ctx.textBaseline = "middle";
-                    // Convert right to canvas x
-                    x = (canvas.width - (canvas.width / 1.2));
+                    x = (canvas.width - (canvas.width / 1.127));
+                    y = (canvas.height / 1.6); // Keep top as it is
+                    ctx.fillText("Valid Thru", x, y);
+
+                    // printing expired date
+                    ctx.font = "48px Arial";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "start";
+                    ctx.textBaseline = "middle";
+                    x = (canvas.width - (canvas.width / 1.127));
                     y = (canvas.height / 1.4); // Keep top as it is
                     ctx.fillText([cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/'), x, y);
 
-                    ctx.font = "16px Arial";
+
+                    // printing cardholder's name
+                    ctx.font = "48px Arial";
                     ctx.fillStyle = "white";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle"
-                    const { width: edElementWidth, height: edElementHeight } = expireDateRef.current!.getBoundingClientRect()
-                    // Convert right to canvas x
-                    x = (canvas.width - (canvas.width / 1.2));
-                    y = (canvas.height / 1.4); // Keep top as it is
-                    ctx.fillText([cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/'), x, y);
+                    ctx.textAlign = "start";
+                    ctx.textBaseline = "middle";
+                    x = (canvas.width - (canvas.width / 1.127));
+                    y = (canvas.height / 1.15); // Keep top as it is
+                    ctx.fillText(cardData.cardHolderName, x, y);
+
+
+
 
 
 
