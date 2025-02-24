@@ -47,46 +47,71 @@ export function constructMetadata({
   };
 }
 
-export function getCardType(cardNumber: string) {
-  const firstDigits = cardNumber.replace(/\s+/g, "").substring(0, 6); // Remove spaces & get first 6 digits
-  let cardData: {
-    numberLength: number;
-    cardName: string | null;
-    cardPng: string;
-  } = {
+// Define all possible card types with strict types
+const CARD_TYPES = {
+  visa: { numberLength: 16, cardPng: "/cardCompanies/visa.png" },
+  mastercard: {
     numberLength: 16,
-    cardName: null,
-    cardPng: "",
-  };
+    cardPng: "/cardCompanies/mastercard.png",
+  },
+  ae: { numberLength: 15, cardPng: "/cardCompanies/ae.png" }, // American Express
+  discover: {
+    numberLength: 16,
+    cardPng: "/cardCompanies/discover.png",
+  },
+  dinersclub: {
+    numberLength: 14,
+    cardPng: "/cardCompanies/dinnersclub.png",
+  },
+  jcb: { numberLength: 16, cardPng: "/cardCompanies/jcb.png" },
+  unionpay: {
+    numberLength: 16,
+    cardPng: "/cardCompanies/unionpay.png",
+  },
+  rupay: { numberLength: 16, cardPng: "/cardCompanies/rupay.png" },
+} as const; // `as const` ensures readonly properties & autocomplete
+
+// Define the type based on `CARD_TYPES`
+type CardType = keyof typeof CARD_TYPES;
+
+// Define return type
+type CardData = {
+  numberLength: number;
+  cardName: CardType | null;
+  cardPng: string;
+};
+
+export function getCardType(cardNumber: string): CardData {
+  const firstDigits = cardNumber.replace(/\s+/g, "").substring(0, 6); // Remove spaces & get first 6 digits
+
+  let cardName: CardType | null = null;
 
   if (/^4/.test(firstDigits)) {
-    cardData.numberLength = 16;
-    cardData.cardName = "visa";
+    cardName = "visa";
   } else if (
     /^5[1-5]/.test(firstDigits) ||
     /^2[2-7]/.test(firstDigits)
   ) {
-    cardData.numberLength = 16;
-    cardData.cardName = "mastercard";
+    cardName = "mastercard";
   } else if (/^3[47]/.test(firstDigits)) {
-    cardData.numberLength = 15;
-    cardData.cardName = "ae"; // American Express (AMEX)
+    cardName = "ae"; // American Express
   } else if (/^6011|^65|^64[4-9]|^622/.test(firstDigits)) {
-    cardData.numberLength = 16;
-    cardData.cardName = "discover";
+    cardName = "discover";
   } else if (/^36|^38|^30[0-5]/.test(firstDigits)) {
-    cardData.numberLength = 14;
-    cardData.cardName = "DinersClub"; //DinersClub
+    cardName = "dinersclub"; // DinersClub
   } else if (/^35[2-8]/.test(firstDigits)) {
-    cardData.numberLength = 16;
-    cardData.cardName = "JCB";
+    cardName = "jcb";
   } else if (/^62/.test(firstDigits)) {
-    cardData.numberLength = 16;
-    cardData.cardName = "UnionPay";
+    cardName = "unionpay";
   } else if (/^60|^65|^81|^82|^508/.test(firstDigits)) {
-    cardData.numberLength = 16;
-    cardData.cardName = "RuPay";
+    cardName = "rupay";
   }
 
-  return cardData;
+  return cardName
+    ? {
+        numberLength: CARD_TYPES[cardName].numberLength,
+        cardName,
+        cardPng: CARD_TYPES[cardName].cardPng,
+      }
+    : { numberLength: 16, cardName: null, cardPng: "" };
 }

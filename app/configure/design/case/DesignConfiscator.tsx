@@ -31,169 +31,10 @@ interface pageProps {
 
 }
 
-const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "case" }) => {
-    const { startUpload, isUploading } = useUploadThing("imageUploader");
-
+const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions }) => {
+    const { startUpload, isUploading, } = useUploadThing("imageUploader");
     const { toast } = useToast();
-    const router = useRouter();
-
-    const phoneCaseRef = useRef<HTMLDivElement>(null); // im keeping the same as it was, this will help me later to understand the doc later.
-    const containerRef = useRef<HTMLDivElement>(null);
-
-
-
-    const cvvRef = useRef<HTMLInputElement>(null);
-    const cardNumberRef = useRef<HTMLDivElement>(null);
-    const expireDateRef = useRef<HTMLDivElement>(null);
-    const holderNameRef = useRef<HTMLDivElement>(null);
-
-
-    const [caseDimensions, setCaseDimensions] = useState({
-        width: 0,
-        height: 0
-    });
-
-    const [cardData, setCardData] = useState<{
-        cardNumber: string;
-        expireDate: string;
-        cvv: string;
-        cardHolderName: string;
-    }>({
-        cardNumber: "",
-        expireDate: "",
-        cvv: "",
-        cardHolderName: "",
-    })
-
-
-
-    const cardType = getCardType(cardData.cardNumber);
-
-
-    function cardDataSetter(value: string, type: "cardNumber" | "expireDate" | "cvv" | "cardHolderName") {
-
-        const isNumber = Number(value)
-        const isEmptyValue = value.trim() === "" //this will be the case when user try to clear the last number or string from the inputs
-
-        switch (type) {
-
-            case "cardNumber":
-                if (isEmptyValue) {
-                    setCardData(prevState => ({ ...prevState, cardNumber: "" }));
-                    break;
-                }
-
-                if (!isNumber) {
-                    return toast({
-                        title: "Only numbers are allowed",
-                        variant: "destructive",
-                        duration: 2000,
-                    })
-                }
-
-                if (cardData.cardNumber.length === 6 && cardType.cardName === null) {
-                    toast({
-                        title: "Please provide a valid card number",
-                        variant: "destructive",
-                        duration: 2000,
-                    })
-                    setCardData(prevState => ({ ...prevState, cardNumber: "" }));
-
-                    break;
-                } else {
-                    setCardData(prevState => ({ ...prevState, cardNumber: value }));
-                }
-                break;
-
-
-            case "expireDate":
-
-                const day = value.slice(0, 2);
-                const year = value.slice(2, 4);
-                const thisYear = (new Date()).getFullYear().toString().slice(2, 4);
-
-                if (isEmptyValue) {
-                    setCardData(prevState => ({ ...prevState, expireDate: "" }));
-                    break;
-                }
-                if (!isNumber && !(day === "0")) {
-                    toast({
-                        title: "Only numbers are allowed",
-                        description: "Type which month is the expire date of the card!",
-                        variant: "destructive",
-                        duration: 2000,
-                    });
-                    break;
-                }
-
-                if (Number(day) > 12) {
-                    toast({
-                        title: "Please provide a valid month!",
-                        variant: "destructive",
-                        duration: 2000,
-                    })
-                    break;
-                } else if ((year.length === 2) && (Number(year) < Number(thisYear))) {
-                    toast({
-                        title: "Please provide an unexpired date!",
-                        variant: "destructive",
-                        duration: 2000,
-                    })
-                    break;
-                } else {
-                    setCardData(prevState => ({ ...prevState, expireDate: value }))
-                }
-                break;
-
-
-            case "cvv":
-
-                if (!isNumber && !isEmptyValue) {
-                    toast({
-                        title: "Only numbers are allowed",
-                        description: "Type the 4 digits number from your card.",
-                        variant: "destructive",
-                        duration: 2000,
-                    });
-                    break;
-                }
-
-                setCardData(prevState => ({ ...prevState, cvv: value }));
-                break;
-
-
-            case "cardHolderName":
-
-                if (value.length > 22) {
-                    toast({
-                        title: "Try with a shorter name",
-                        description: "Turn your name in 22 characters",
-                        variant: "destructive",
-                        duration: 2000,
-                    });
-                    break;
-                }
-
-
-                setCardData(prevState => ({ ...prevState, cardHolderName: value }));
-
-                break;
-        }
-
-    }
-
-
-
-    useEffect(() => {
-        if (phoneCaseRef?.current) {
-            const { width, height } = phoneCaseRef.current.getBoundingClientRect()
-            setCaseDimensions({ width, height })
-        }
-
-    }, [phoneCaseRef])
-
-    const envCheck = process.env.NODE_ENV === "production";
-    const isCase = type === "case"
+    const router = useRouter()
 
     const { mutate: saveConfig, isPending } = useMutation({
         mutationKey: ['save-config'],
@@ -222,8 +63,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
         {
             color: COLORS[0],
             model: MODELS.options[0],
-            material: MATERIALS.options[isCase ? 0 : 2],
-            finish: FINISHES.options[isCase ? 0 : 2]
+            material: MATERIALS.options[0],
+            finish: FINISHES.options[0]
         }
     )
 
@@ -238,13 +79,13 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     })
 
 
+    const phoneCaseRef = useRef<HTMLDivElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
 
     async function saveConfiguration() {
         // if (!phoneCaseRef.current) return // to get rid from the error of TS cz we destructured "phoneCaseRef.current?.getBoundingClientRect()" but if the ref.current is undefined then the user won't know what happened here and that's why we need to use other way.
 
         try {
-
-            /*this is the portion of calculating the sizes and dimensions of the structures of card and case. */
             // const { } = phoneCaseRef.current?.getBoundingClientRect() // it gives the exact coordinates 
             const {// taking the position of case
                 left: caseLeft, // distance from the window to the element.
@@ -253,6 +94,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                 height // rendered caseHeight 
                 // this height and width we can use to create the canvas 
             } = phoneCaseRef.current!.getBoundingClientRect() // we're telling TS that we're sure about that we will get the data from it by replacing "?" with "!" here.
+
             const { // taking the position of outer container
                 left: containerLeft,
                 top: containerTop,
@@ -269,16 +111,9 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             const actualY = renderedPosition.y - topOffset /*distance between container and case eg: x100*/
             // actualX and actualY relative to the case not the container. 
 
-            /*this is the end of portion of calculating the sizes and dimensions of the structures of card and case. */
-
-            const canvasDimensions = {
-                width: type === "card" ? width : width,
-                height: type === "card" ? height : height
-            }
-
             const canvas = document.createElement('canvas') // create a canvas to print things.
-            canvas.width = canvasDimensions.width // proving the dimensions of the canvas as the structure ot the item
-            canvas.height = canvasDimensions.height // proving the dimensions of the canvas as the structure ot the item
+            canvas.width = width
+            canvas.height = height
 
             const ctx = canvas.getContext('2d') // context allows to modify the canvas and draw things.
 
@@ -288,75 +123,22 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             await new Promise((resolve, reject) => (userImage.onload = resolve)) // waiting to load the image from the url into the userImage var.
             // now the image is fully loaded and ready to be drawn into the canvas.
 
-
-            if (ctx) {
-
-                // ctx?.drawImage(
-                //     userImage,
-                //     actualX, // calculated position from the visual elements
-                //     actualY,
-                //     renderedDimension.width, // final sizes of the image (dimensions)
-                //     renderedDimension.height,
-                // )
-
-
-                if (type === "card") {
-
-                    const chipPng = new Image();
-                    chipPng.crossOrigin = "anonymous";
-                    chipPng.src = RATIOS.card.src;
-                    await new Promise((resolve) => (chipPng.onload = resolve))
-
-                    ctx?.drawImage(
-                        chipPng,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height,
-                    )
-
-                    // printing cvv
-                    ctx.font = "16px Arial";
-                    ctx.fillStyle = "white";
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle"
-
-
-                    const { width: cvvElementWidth, height: cvvElementHeight } = cvvRef.current!.getBoundingClientRect()
-                    // Convert right to canvas x
-                    let x = (canvas.width - (canvas.width / 7.5));
-                    let y = (canvas.height / 3.45) + (cvvElementHeight / 1.7); // Keep top as it is
-
-                    ctx.fillText(cardData.cvv, x, y);
-
-                    // // printing card number
-                    // ctx.font = "20px Arial";
-                    // ctx.fillStyle = "black";
-                    // ctx.textAlign = "end";
-                    // ctx.fillText(cardData.cvv, (canvas.width - 40), (canvas.height / 3.7));
-
-
-                }
-
-
-
-
-            }
-
+            ctx?.drawImage(
+                userImage,
+                actualX, // calculated position from the visual elements
+                actualY,
+                renderedDimension.width, // final sizes of the image (dimensions)
+                renderedDimension.height,
+            )
 
             const base64 = canvas.toDataURL() // this is the best way to convert a canvas to a base64 =it returns> a really long string contains the image data in base64 formate. //Base64 is a way of encoding binary data (like images, audio files, or other binary formats) into a string  
             // presentation of base64 = iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12
 
-
-
             const base64data = base64.split(',')[1] // [info of base64, theBase64String] A Base64-encoded string that represents binary image data.
             const blob = base64ToBlob(base64data, "image/png") // turning into a blob object
             const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
-
-            return console.log(base64);
-
-
             // 6.00.00
+
             await startUpload([file], {
                 configId
             })
@@ -368,6 +150,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                 description: "There was a problem saving your config, please try again.",
                 variant: "destructive",
             })
+
         }
     }
 
@@ -424,125 +207,24 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
     }
 
-    const aspects = {
-        w: type === "case" ? RATIOS.case.w : RATIOS.card.w,
-        h: type === "case" ? RATIOS.case.h : RATIOS.card.h
-    }
-
-
     return (
-        <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 '>
+        <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 ' >
             <div
                 ref={containerRef}
                 className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-                <div className={cn("relative bg-opacity-50 pointer-events-none  _3:58:00_ ",
-                    `aspect-[${aspects.w}/${aspects.h}]`,
-                    type === 'case' ? 'w-60' : "w-96"
-                )}>
+                <div className="relative w-60 bg-opacity-50 pointer-events-none aspect-[896/1831] _3:58:00_  ">
                     <AspectRatio
                         ref={phoneCaseRef}
-                        ratio={aspects.w / aspects.h} //the ratio of the phone png we're gonna use
-                        className={cn("pointer-events-none relative z-40 w-full font-sans text-white",
-                            `aspect-[${aspects.w}/${aspects.h}]`
-                        )}
+                        ratio={896 / 1831} //the ratio of the phone png we're gonna use
+                        className="pointer-events-none relative z-50 aspect-[896/1831] w-full"
                     >
                         <NextImage
                             alt="phone Image"
-                            src={type === 'case' ? RATIOS.case.src : RATIOS.card.src}
-                            className="pointer-events-none z-40 select-none"
+                            src={'/phone-template.png'}
+                            className="pointer-events-none z-50 select-none"
                             fill
                         />
-
-                        {/* CVV card security number */}
-                        <input
-                            type="text"
-                            name="cvv"
-                            id=""
-                            className="z-50 bg-transparent pointer-events-auto focus:outline-none focus:border-none absolute "
-                            style={{
-                                left: caseDimensions.width - (caseDimensions.width / 6),
-                                top: caseDimensions.height / 3.45 + 'px',
-                                width: caseDimensions.width / 10.1 + 'px',
-                            }}
-                            placeholder="XXXX"
-                            autoComplete="off"
-                            ref={cvvRef}
-
-                            onChange={e => cardDataSetter(e.target.value, "cvv")}
-                            value={cardData.cvv}
-                            maxLength={4}
-                        />
-
-                        {/* card number */}
-                        <input
-                            type="text"
-                            id=""
-                            name="cardNumber"
-                            className="z-50 bg-transparent h-8 pointer-events-auto focus:outline-none focus:border-none absolute "
-                            style={{
-                                left: 48 + 'px',
-                                top: caseDimensions.height / 2.4 + 'px',
-                                width: caseDimensions.width / 2 + 'px',
-                                height: caseDimensions.height / 8 + 'px'
-                            }}
-                            placeholder="XXXX XXXX XXXX XXXX"
-                            autoComplete="off"
-
-                            onChange={e => cardDataSetter((e.target.value).replace(/\s+/g, ''), "cardNumber")} // this regex removes spaces
-                            value={cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& ')} // this regex adds spaces after every 4 numbers
-                            maxLength={(Number(cardType.numberLength) + 3)}
-                        />
-
-
-
-                        {/* card expire date */}
-                        <div
-                            style={{
-                                left: 48 + 'px',
-                                top: caseDimensions.height / 1.7 + 'px',
-                                width: caseDimensions.width / 2 + 'px',
-                            }}
-                            className=" absolute"
-                        >
-                            <span
-                                style={{
-                                    fontSize: '12px',
-                                    textAlign: 'start',
-                                    display: "block",
-                                }}
-                            >
-                                Valid Thru
-                            </span>
-                            <input
-                                type="text"
-                                name="date"
-                                id=""
-                                className="z-50 w-full bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
-                                placeholder="MM/YY"
-                                autoComplete="off"
-                                maxLength={5}
-
-                                onChange={e => cardDataSetter((e.target.value).replace(/\//g, ''), "expireDate")}
-                                value={cardData.expireDate.length <= 2 ? cardData.expireDate : [cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/')}
-                            />
-
-                            <input
-                                type="text"
-                                name="name"
-                                id=""
-                                className="z-50 mt-2 uppercase bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
-                                placeholder="Your Name"
-                                autoComplete="off"
-
-                                style={{ width: caseDimensions.width / 1.1 }}
-                                onChange={e => cardDataSetter((e.target.value).toUpperCase(), "cardHolderName")}
-                                value={cardData.cardHolderName}
-                            />
-
-                        </div>
-
-
                     </AspectRatio>
                     <div className="absolute z-40 inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px] 
                     shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
@@ -561,7 +243,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         height: imageDimensions.height / 4,
                         width: imageDimensions.width / 4
                     }}
-
                     lockAspectRatio
                     onResizeStop={(_, __, ref, ___, { x, y }) => { // _ means we won't use this var. 
                         setRenderedDimension({
@@ -583,25 +264,17 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         topLeft: <HandleComponent />
                     }}
 
-                    className="absolute z-20 hover: border-[3px] border-primary !hidden"
+                    className="absolute z-20 hover: border-[3px] border-primary"
 
                 >
                     <div className="relative w-full h-full ">
-                        {
-                            envCheck ? <NextImage
-                                src={imageUrl}
-                                fill
-                                alt="your Image"
-                                className="pointer-events-none"
+                        <NextImage
+                            src={imageUrl}
+                            fill
+                            alt="your Image"
+                            className="pointer-events-none"
 
-                            />
-                                :
-                                <img
-                                    src={imageUrl}
-                                    alt="your Image"
-                                    className="pointer-events-none"
-                                />
-                        }
+                        />
                     </div>
                 </Rnd>
 
@@ -617,11 +290,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         aria-hidden
                     />
 
-
                     <div
                         className="px-8 pb-12 pt-8"
                     >
-                        <h2>Customize your {type}</h2>
+                        <h2>Customize your case</h2>
 
                         <div
                             className="w-full h-px bg-zinc-200 my-6 "
@@ -632,7 +304,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         >
                             <div className="flex flex-col gap-6 " >
 
-                                {/* colors options */}
                                 <RadioGroup
                                     value={options.color}
                                     onChange={(value) => {
@@ -671,47 +342,40 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                         }
                                     </div>
                                 </RadioGroup>
-
-
-                                {/* Model options only for phones */}
                                 <div className="relative flex flex-col gap-3 w-full ">
-                                    {isCase && (
-                                        <>
-                                            <Label>Model</Label>
-                                            <DropdownMenu >
-                                                <DropdownMenuTrigger asChild /*the child will be printed here*/ >
-                                                    <Button
-                                                        variant={'outline'}
-                                                        role="combobox"
-                                                        className="w-full justify-between"
-                                                    >
-                                                        {options.model.label}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
+                                    <Label>Model</Label>
+                                    <DropdownMenu >
+                                        <DropdownMenuTrigger asChild /*the child will be printed here*/ >
+                                            <Button
+                                                variant={'outline'}
+                                                role="combobox"
+                                                className="w-full justify-between"
+                                            >
+                                                {options.model.label}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
+                                            </Button>
+                                        </DropdownMenuTrigger>
 
-                                                <DropdownMenuContent >
-                                                    {MODELS.options.map((model) => (
-                                                        <DropdownMenuItem
-                                                            key={model.label}
-                                                            className={cn('flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100', {
-                                                                "bg-zinc-100": model.label === options.model.label
-                                                            })}
-                                                            onClick={() => {
-                                                                setOptions((prev) => ({ ...prev, model }))
-                                                            }}
-                                                        >
-                                                            <Check className={cn('mr-2 h-4 w-4 ',
-                                                                model.label === options.model.label ? "opacity-100" : "opacity-0"
-                                                            )} />
-                                                            {model.label}
-                                                        </DropdownMenuItem>
-                                                    ))}
-                                                </DropdownMenuContent>
+                                        <DropdownMenuContent >
+                                            {MODELS.options.map((model) => (
+                                                <DropdownMenuItem
+                                                    key={model.label}
+                                                    className={cn('flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100', {
+                                                        "bg-zinc-100": model.label === options.model.label
+                                                    })}
+                                                    onClick={() => {
+                                                        setOptions((prev) => ({ ...prev, model }))
+                                                    }}
+                                                >
+                                                    <Check className={cn('mr-2 h-4 w-4 ',
+                                                        model.label === options.model.label ? "opacity-100" : "opacity-0"
+                                                    )} />
+                                                    {model.label}
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuContent>
 
-                                            </DropdownMenu>
-                                        </>)
-                                    }
+                                    </DropdownMenu>
 
                                     {
                                         [MATERIALS, FINISHES].map(({ name, options: selectableOptions }) => (
@@ -730,7 +394,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                                 </Label>
                                                 <div className="mt-3 space-y-4" >
                                                     {
-                                                        selectableOptions.slice(isCase ? 0 : 2, isCase ? 2 : 4).map((option) => (
+                                                        selectableOptions.map((option) => (
                                                             <RadioGroup.Option
 
                                                                 key={option.value}
@@ -756,7 +420,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                                                                 <RadioGroup.Description as='span'
                                                                                     className={'text-gray-500'}
                                                                                 >
-                                                                                    <span className="block sm:inline whitespace-nowrap" >
+                                                                                    <span className="block sm:inline" >
                                                                                         {option.description}
                                                                                     </span>
                                                                                 </RadioGroup.Description>
@@ -805,18 +469,16 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                                 size={"sm"}
                                 className="w-full"
-                                onClick={() => saveConfiguration(
-                                    // {
-                                    //     configId,
-                                    //     color: options.color.value,
-                                    //     finish: options.finish.value,
-                                    //     material: options.material.value,
-                                    //     model: options.model.value
-                                    // }
-                                )}
+                                onClick={() => saveConfig({
+                                    configId,
+                                    color: options.color.value,
+                                    finish: options.finish.value,
+                                    material: options.material.value,
+                                    model: options.model.value
+                                })}
                             >
                                 Continue
-                                <ArrowRight className="size-4 ml-1.5 inline " />
+                                <ArrowRight className="size-4 ml-1.5 inline" />
                             </Button>
                         </div>
                     </div>
@@ -829,33 +491,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 }
 
-{/*
+{/* <h1 className="bg-zinc-900 border-zinc-900 bg-blue-950 border-blue-950 bg-rose-950 border-rose-950 hidden" /> */ }
 
-these are the predicted dynamic classes of tailwind css.
-
-<h1 className=
-"
-bg-zinc-900 
-bg-blue-950 
-bg-rose-950 
-bg-sky-600
-bg-green-700
-bg-orange-800
-border-zinc-900 
-border-blue-950 
-border-rose-950   
-border-sky-600   
-border-green-700   
-border-orange-800   
-
-
-hidden" 
-
-/>
-
-*/ }
-
-// export default dynamic(() => Promise.resolve(DesignConfiscator), { ssr: false });
 export default DesignConfiscator;
 
 /* 

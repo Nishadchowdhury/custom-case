@@ -18,7 +18,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { saveConfig as _saveConfig, SaveConfigArgs } from "../action";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 
 interface pageProps {
     configId: string;
@@ -271,8 +270,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
             /*this is the end of portion of calculating the sizes and dimensions of the structures of card and case. */
             const canvasDimensions = {
-                width: 1000,
-                height: 630
+                width: 600,
+                height: 378
             }
             const canvas = document.createElement('canvas') // create a canvas to print things.
             canvas.width = canvasDimensions.width // proving the dimensions of the canvas as the structure ot the item
@@ -281,78 +280,71 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
             if (ctx) {
+                const chipPng = new Image();
+                chipPng.crossOrigin = "anonymous";
 
+                // drawing the image
+                chipPng.src = RATIOS.card.src;
+                await new Promise((resolve) => (chipPng.onload = resolve))
+                ctx?.drawImage(chipPng, 0, 0, canvas.width, canvas.height,)
 
+                // drawing the card logo
+                chipPng.src = cardType.cardPng;
+                await new Promise((resolve) => (chipPng.onload = resolve))
+                ctx?.drawImage(
+                    chipPng,
+                    canvas.width - (caseDimensions.width / 4), // PositionX
+                    canvas.height / 1.6, // PositionY
+                    canvas.height / 5,
+                    canvas.height / 5
+                )
 
-                if (type === "card") {
+                // printing cvv
+                ctx.font = "32px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "start";
+                ctx.textBaseline = "middle"
+                // Convert right to canvas x
+                let x = (canvas.width / 1.21);
+                let y = (canvas.height / 2.9)
+                ctx.fillText(cardData.cvv, x, y);
 
-                    const chipPng = new Image();
-                    chipPng.crossOrigin = "anonymous";
-                    chipPng.src = RATIOS.card.src;
-                    await new Promise((resolve) => (chipPng.onload = resolve))
+                // printing card Number
+                ctx.font = "36px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "start";
+                ctx.textBaseline = "middle";
+                x = (canvas.width - (canvas.width / 1.127));
+                y = (canvas.height / 2.20);
+                ctx.fillText(cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& '), x, y);
 
-                    // drawing the image
-                    ctx?.drawImage(chipPng, 0, 0, canvas.width, canvas.height,)
+                // printing expired date level
+                ctx.font = "24px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "start";
+                ctx.textBaseline = "middle";
+                x = (canvas.width - (canvas.width / 1.127));
+                y = (canvas.height / 1.6);
+                ctx.fillText("Valid Thru", x, y);
 
+                // printing expired date
+                ctx.font = "32px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "start";
+                ctx.textBaseline = "middle";
+                x = (canvas.width - (canvas.width / 1.127));
+                y = (canvas.height / 1.4);
+                ctx.fillText([cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/'), x, y);
 
-                    // printing cvv
-                    ctx.font = "48px Arial";
-                    ctx.fillStyle = "white";
-                    ctx.textAlign = "start";
-                    ctx.textBaseline = "middle"
-                    const { width: cvvElementWidth, height: cvvElementHeight } = cvvRef.current!.getBoundingClientRect()
-                    // Convert right to canvas x
-                    let x = (canvas.width - (canvas.width / 7.5));
-                    let y = (canvas.height / 3.45) // Keep top as it is
-                    ctx.fillText(cardData.cvv, x, y);
+                // printing cardholder's name
+                ctx.font = "32px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "start";
+                ctx.textBaseline = "middle";
+                x = (canvas.width - (canvas.width / 1.127));
+                y = (canvas.height / 1.15);
+                ctx.fillText(cardData.cardHolderName, x, y);
 
-
-
-                    const { width: cnElementWidth, height: cnElementHeight } = cardNumberRef.current!.getBoundingClientRect()
-                    // printing card Number
-                    ctx.font = "54px Arial";
-                    ctx.fillStyle = "white";
-                    ctx.textAlign = "start";
-                    ctx.textBaseline = "middle";
-                    x = (canvas.width - (canvas.width / 1.127));
-                    y = (canvas.height / 2.20); // Keep top as it is
-                    ctx.fillText(cardData.cardNumber, x, y);
-
-
-                    // printing expired date level
-                    ctx.font = "36px Arial";
-                    ctx.fillStyle = "white";
-                    ctx.textAlign = "start";
-                    ctx.textBaseline = "middle";
-                    x = (canvas.width - (canvas.width / 1.127));
-                    y = (canvas.height / 1.6); // Keep top as it is
-                    ctx.fillText("Valid Thru", x, y);
-
-                    // printing expired date
-                    ctx.font = "48px Arial";
-                    ctx.fillStyle = "white";
-                    ctx.textAlign = "start";
-                    ctx.textBaseline = "middle";
-                    x = (canvas.width - (canvas.width / 1.127));
-                    y = (canvas.height / 1.4); // Keep top as it is
-                    ctx.fillText([cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/'), x, y);
-
-
-                    // printing cardholder's name
-                    ctx.font = "48px Arial";
-                    ctx.fillStyle = "white";
-                    ctx.textAlign = "start";
-                    ctx.textBaseline = "middle";
-                    x = (canvas.width - (canvas.width / 1.127));
-                    y = (canvas.height / 1.15); // Keep top as it is
-                    ctx.fillText(cardData.cardHolderName, x, y);
-
-
-
-
-
-
-                }
             }
 
 
@@ -439,8 +431,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     }
 
     const aspects = {
-        w: type === "case" ? RATIOS.case.w : RATIOS.card.w,
-        h: type === "case" ? RATIOS.case.h : RATIOS.card.h
+        w: RATIOS.card.w,
+        h: RATIOS.card.h
     }
 
 
@@ -477,7 +469,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             style={{
                                 left: caseDimensions.width - (caseDimensions.width / 6),
                                 top: caseDimensions.height / 3.45 + 'px',
-                                width: caseDimensions.width / 10.1 + 'px',
+                                width: caseDimensions.width / 9 + 'px',
+                                fontSize: caseDimensions.width / 22 + 'px'
                             }}
                             placeholder="XXXX"
                             autoComplete="off"
@@ -498,6 +491,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
                                 top: caseDimensions.height / 2.4 + 'px',
                                 width: caseDimensions.width / 2 + 'px',
+                                fontSize: caseDimensions.width / 22 + 'px'
                             }}
                             placeholder="XXXX XXXX XXXX XXXX"
                             autoComplete="off"
@@ -513,7 +507,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         {/* card expire date */}
                         <div
                             style={{
-                                left: 48 + 'px',
+                                left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
                                 top: caseDimensions.height / 1.7 + 'px',
                                 width: caseDimensions.width / 2 + 'px',
                             }}
@@ -521,7 +515,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         >
                             <span
                                 style={{
-                                    fontSize: '12px',
+                                    fontSize: caseDimensions.width / 28 + 'px',
                                     textAlign: 'start',
                                     display: "block",
                                 }}
@@ -537,6 +531,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 autoComplete="off"
                                 maxLength={5}
                                 ref={expireDateRef}
+                                style={{
+
+                                    fontSize: caseDimensions.width / 22 + 'px'
+                                }}
 
                                 onChange={e => cardDataSetter((e.target.value).replace(/\//g, ''), "expireDate")}
                                 value={cardData.expireDate.length <= 2 ? cardData.expireDate : [cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/')}
@@ -546,16 +544,37 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 type="text"
                                 name="name"
                                 id=""
-                                className="z-50 mt-2 uppercase bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
+                                className="z-50 uppercase bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
                                 placeholder="Your Name"
                                 autoComplete="off"
 
-                                style={{ width: caseDimensions.width / 1.1 }}
+                                style={{
+                                    marginTop: (caseDimensions.height / 40) + "px",
+                                    width: caseDimensions.width / 1.1,
+                                    fontSize: caseDimensions.width / 22 + 'px'
+                                }}
                                 onChange={e => cardDataSetter((e.target.value).toUpperCase(), "cardHolderName")}
                                 value={cardData.cardHolderName}
                             />
 
                         </div>
+
+                        {
+                            cardType.cardPng &&
+
+                            <img
+                                src={cardType.cardPng}
+                                alt=""
+                                className="object-cover aspect-square absolute outline-1 "
+                                style={{
+
+                                    width: caseDimensions.width / 7 + 'px',
+                                    height: caseDimensions.width / 7 + 'px',
+                                    left: caseDimensions.width - (caseDimensions.width / 5),
+                                    top: caseDimensions.height / 1.7,
+                                }}
+                            />
+                        }
 
 
                     </AspectRatio>
@@ -598,10 +617,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         topLeft: <HandleComponent />
                     }}
 
-                    className="absolute z-20 hover: border-[3px] border-primary !hidden"
+                    className="absolute z-20 hover: border-[3px] border-primary  "
 
                 >
-                    <div className="relative w-full h-full ">
+                    <div className="relative w-full h-full  blur-sm">
                         {
                             envCheck ? <NextImage
                                 src={imageUrl}
@@ -625,6 +644,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
             <div className="h-[37.5rem] w-full col-span-full lg:col-span-1 flex flex-col bg-white ">
                 <ScrollArea
+
                     className="relative flex-1 overflow-auto "
                 >
                     <div
@@ -864,7 +884,8 @@ border-green-700
 border-orange-800   
 
 
-hidden" 
+hidden
+"
 
 />
 

@@ -1,5 +1,12 @@
 * {
   /* @apply transition-all; */
+  /* outline: 1px red solid;
+  outline-offset: -1px; */
+}
+
+.outline_red {
+  outline: 1px red solid;
+  outline-offset: -1px;
 }
 
 /* Apply the animation to the element */
