@@ -50,7 +50,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             })
         },
         onSuccess: () => {
-            router.push(`/configure/preview?id=${configId}`)
+            router.push(`/configure/preview/case?id=${configId}`)
         }
     });
 
@@ -323,7 +323,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                         className="mt-3 flex items-center space-x-3"
                                     >
                                         {
-                                            COLORS.map((color) => (
+                                            COLORS.slice(0,3).map((color) => (
                                                 <RadioGroup.Option
                                                     key={color.label}
                                                     value={color}
@@ -394,7 +394,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                                 </Label>
                                                 <div className="mt-3 space-y-4" >
                                                     {
-                                                        selectableOptions.map((option) => (
+                                                        selectableOptions.slice(0,2).map((option) => (
                                                             <RadioGroup.Option
 
                                                                 key={option.value}
@@ -490,7 +490,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     )
 
 }
-
 {/* <h1 className="bg-zinc-900 border-zinc-900 bg-blue-950 border-blue-950 bg-rose-950 border-rose-950 hidden" /> */ }
 
 export default DesignConfiscator;

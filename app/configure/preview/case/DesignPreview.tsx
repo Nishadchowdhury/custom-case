@@ -14,7 +14,7 @@ import { ArrowRight, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Confetti from 'react-dom-confetti';
-import { createCheckoutSession } from './actions';
+import { createCheckoutSessionCase } from '../actions';
 
 
 
@@ -45,7 +45,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
 
     const { mutate: createPaymentSession, isPending } = useMutation({
         mutationKey: ['get-checkout-session'],
-        mutationFn: createCheckoutSession,
+        mutationFn: createCheckoutSessionCase,
         onSuccess: ({ url }) => {
             if (url) router.push(url)
             else throw new Error("Unable to retrieve payment URL.")

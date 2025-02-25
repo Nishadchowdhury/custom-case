@@ -66,6 +66,10 @@ export const MODELS = {
             label: "iPhone 16",
             value: "iphone16"
         },
+        {
+            label: "CARD",
+            value: "atmcard"
+        },
     ]
 } as const
 
@@ -137,12 +141,14 @@ export const RATIOS = {
     case: {
         w: 896,
         h: 1831,
-        src: "/phone-template.png"
+        src: "/phone-template.png",
+        darkSrc: "",
     },
     card: {
         w: 1000,
         h: 630,
-        src: "/chip-atm.png"
+        src: "/chip-atm.png",
+        darkSrc: ""
     }
 } as const
 

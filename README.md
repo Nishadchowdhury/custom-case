@@ -1,8 +1,8 @@
 shift + alt + O = get rid of all the unused imports.
 
 ------------------------------------------Advance Typescript------------------------------------------
-1.  inhering types from other interfaces we can use extends but for a particular interface we can use Pick<Interface, "keyName">
 
+1.  inhering types from other interfaces we can use extends but for a particular interface we can use Pick<Interface, "keyName">
 
 getting the cropped image through the canvas. 5:25:00
 
@@ -137,6 +137,11 @@ There Is X steps to get the cropped image
 1.  divide-x divide-gray-200 => it adds dividers after and before the elements in a grid and first and last child elements won't get the divider border.
 2.  we can tun any element to shadCn-button by providing buttonVariants in classNames <LoginLink className={buttonVariants({ variant: "outline" })} >Login</LoginLink>
 
+3.  dynamic className
+    {
+    [`border-${color.tw}`]: active || checked // cn function doesn't support template string directly in conditions so [``] needed here.
+    }
+
 -------------------------------------- Payment flow -----------------------------------------------
 
 1. from preview page user will click CONTINUE button and that bull lead to stripe's hosted payment page.
@@ -176,5 +181,3 @@ There Is X steps to get the cropped image
 --------------------------------------------metadata --------------------------------------------
 
 1.lib>utils.ts file create a function like bellow.
-
-

@@ -23,7 +23,7 @@ export default function RootLayout({
         <Navbar />
 
         <main className="grainy-light flex flex-col min-h-[calc(100vh-3.5rem-1px)] " >
-          <div className="flex flex-1 flex-col h-full bg-gray-900 " >
+          <div className="flex flex-1 flex-col h-full bg-gray-900_ " >
 
             <Provider>
               {children}

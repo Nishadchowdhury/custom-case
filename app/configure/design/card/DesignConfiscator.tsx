@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { saveConfig as _saveConfig, SaveConfigArgs } from "../action";
 import { useRouter } from "next/navigation";
+import { SliderInput } from "./components/SliderInput";
 
 interface pageProps {
     configId: string;
@@ -47,6 +48,10 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     const holderNameRef = useRef<HTMLInputElement>(null);
 
 
+
+    const [imageMoving, setImageMoving] = useState(!false);
+    const [blurValue, setBlurValue] = useState(0);
+    const [brightnessValue, setBrightnessValue] = useState(100);
     const [caseDimensions, setCaseDimensions] = useState({
         width: 0,
         height: 0
@@ -208,7 +213,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             })
         },
         onSuccess: () => {
-            router.push(`/configure/preview?id=${configId}`)
+            router.push(`/configure/preview/card?id=${configId}`)
         }
     });
 
@@ -270,8 +275,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
             /*this is the end of portion of calculating the sizes and dimensions of the structures of card and case. */
             const canvasDimensions = {
-                width: 600,
-                height: 378
+                width: width * 2,
+                height: height * 2
             }
             const canvas = document.createElement('canvas') // create a canvas to print things.
             canvas.width = canvasDimensions.width // proving the dimensions of the canvas as the structure ot the item
@@ -282,6 +287,21 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             if (ctx) {
                 const chipPng = new Image();
                 chipPng.crossOrigin = "anonymous";
+
+                chipPng.src = imageUrl;
+                await new Promise((resolve, reject) => (chipPng.onload = resolve)) // waiting to load the image from the url into the userImage var.
+                // now the image is fully loaded and ready to be drawn into the canvas.
+
+                ctx.filter = `brightness(${brightnessValue}%) blur(${blurValue / 5}px) `
+                ctx?.drawImage(
+                    chipPng,
+                    actualX * 2, // calculated position from the visual elements
+                    actualY * 2,
+                    renderedDimension.width * 2, // final sizes of the image (dimensions)
+                    renderedDimension.height * 2,
+                )
+                ctx.filter = 'none'
+
 
                 // drawing the image
                 chipPng.src = RATIOS.card.src;
@@ -296,7 +316,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                     canvas.width - (caseDimensions.width / 4), // PositionX
                     canvas.height / 1.6, // PositionY
                     canvas.height / 5,
-                    canvas.height / 5
+                    canvas.height / 5,
+
                 )
 
                 // printing cvv
@@ -358,7 +379,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
 
             navigator.clipboard.writeText(base64)
-            return console.log(base64);
+            // return console.log(base64);
 
 
             // 6.00.00
@@ -442,20 +463,26 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                 ref={containerRef}
                 className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-                <div className={cn("relative bg-opacity-50 pointer-events-none  _3:58:00_ ",
-                    `aspect-[${aspects.w}/${aspects.h}]`,
-                    type === 'case' ? 'w-60' : "w-96"
-                )}>
+                <div
+                    className={cn("relative bg-opacity-50 pointer-events-none  _3:58:00_ ",
+                        `aspect-[${aspects.w}/${aspects.h}]`,
+                        type === 'case' ? 'w-60' : "w-96"
+                    )}
+
+
+                >
                     <AspectRatio
                         ref={phoneCaseRef}
                         ratio={aspects.w / aspects.h} //the ratio of the phone png we're gonna use
                         className={cn("pointer-events-none relative z-40 w-full font-sans text-white",
                             `aspect-[${aspects.w}/${aspects.h}]`
                         )}
+
+
                     >
                         <NextImage
-                            alt="phone Image"
-                            src={type === 'case' ? RATIOS.case.src : RATIOS.card.src}
+                            alt="Card Image"
+                            src={RATIOS.card.src}
                             className="pointer-events-none z-40 select-none"
                             fill
                         />
@@ -465,7 +492,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             type="text"
                             name="cvv"
                             id=""
-                            className="z-50 bg-transparent pointer-events-auto focus:outline-none focus:border-none absolute "
+                            className="z-50 bg-transparent  focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
                             style={{
                                 left: caseDimensions.width - (caseDimensions.width / 6),
                                 top: caseDimensions.height / 3.45 + 'px',
@@ -479,6 +506,9 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             onChange={e => cardDataSetter(e.target.value, "cvv")}
                             value={cardData.cvv}
                             maxLength={4}
+                            disabled={imageMoving}
+
+
                         />
 
                         {/* card number */}
@@ -486,7 +516,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             type="text"
                             id=""
                             name="cardNumber"
-                            className="z-50 bg-transparent pointer-events-auto focus:outline-none focus:border-none absolute "
+                            className="z-50 bg-transparent focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
                             style={{
                                 left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
                                 top: caseDimensions.height / 2.4 + 'px',
@@ -500,6 +530,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             onChange={e => cardDataSetter((e.target.value).replace(/\s+/g, ''), "cardNumber")} // this regex removes spaces
                             value={cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& ')} // this regex adds spaces after every 4 numbers
                             maxLength={(Number(cardType.numberLength) + 3)}
+                            disabled={imageMoving}
                         />
 
 
@@ -526,10 +557,11 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 type="text"
                                 name="date"
                                 id=""
-                                className="z-50 w-full bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
+                                className="z-50 w-full bg-transparent focus:outline-none focus:border-none text-white pointer-events-auto disabled:pointer-events-none"
                                 placeholder="MM/YY"
                                 autoComplete="off"
                                 maxLength={5}
+                                disabled={imageMoving}
                                 ref={expireDateRef}
                                 style={{
 
@@ -544,13 +576,14 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 type="text"
                                 name="name"
                                 id=""
-                                className="z-50 uppercase bg-transparent pointer-events-auto focus:outline-none focus:border-none text-white"
+                                className="z-50 uppercase bg-transparent focus:outline-none focus:border-none text-white pointer-events-auto disabled:pointer-events-none"
                                 placeholder="Your Name"
                                 autoComplete="off"
+                                disabled={imageMoving}
 
                                 style={{
                                     marginTop: (caseDimensions.height / 40) + "px",
-                                    width: caseDimensions.width / 1.1,
+
                                     fontSize: caseDimensions.width / 22 + 'px'
                                 }}
                                 onChange={e => cardDataSetter((e.target.value).toUpperCase(), "cardHolderName")}
@@ -565,7 +598,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             <img
                                 src={cardType.cardPng}
                                 alt=""
-                                className="object-cover aspect-square absolute outline-1 "
+                                className="object-cover aspect-square absolute outline-1 select-none"
                                 style={{
 
                                     width: caseDimensions.width / 7 + 'px',
@@ -603,11 +636,13 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                             width: parseInt(ref.style.width.slice(0, -2))  /*50px*/
                         })
                         setRenderedPosition({ x, y })
+                        setImageMoving(false)
                     }} // this event will trigger when the resize event is triggered.
 
                     onDragStop={(_, data) => {
                         const { x, y } = data;
                         setRenderedPosition({ x, y });
+                        setImageMoving(false)
                     }}
 
                     resizeHandleComponent={{
@@ -617,10 +652,12 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         topLeft: <HandleComponent />
                     }}
 
-                    className="absolute z-20 hover: border-[3px] border-primary  "
+                    className="absolute z-20 hover: border-[3px] border-primary select-none "
 
+                    onResizeStart={() => setImageMoving(true)}
+                    onDragStart={() => setImageMoving(true)}
                 >
-                    <div className="relative w-full h-full  blur-sm">
+                    <div className="relative w-full h-full select-none">
                         {
                             envCheck ? <NextImage
                                 src={imageUrl}
@@ -628,12 +665,18 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 alt="your Image"
                                 className="pointer-events-none"
 
+                                style={{
+                                    filter: `blur(${blurValue / 5}px)`,
+
+                                }}
+
                             />
                                 :
                                 <img
                                     src={imageUrl}
                                     alt="your Image"
                                     className="pointer-events-none"
+                                    style={{ filter: `blur(${blurValue / 5}px)  brightness(${brightnessValue}%)` }}
                                 />
                         }
                     </div>
@@ -656,7 +699,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                     <div
                         className="px-8 pb-12 pt-8"
                     >
-                        <h2>Customize your {type}</h2>
+                        <h2>Customize your Card</h2>
 
                         <div
                             className="w-full h-px bg-zinc-200 my-6 "
@@ -706,6 +749,24 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                         }
                                     </div>
                                 </RadioGroup>
+
+                                {/* managing blur effect */}
+                                <SliderInput
+                                    value={blurValue}
+                                    setValue={setBlurValue}
+                                    defaultValue={0}
+                                    message="Blur Effect"
+                                />
+
+
+                                {/* managing brightness */}
+                                <SliderInput
+                                    value={brightnessValue}
+                                    setValue={setBrightnessValue}
+                                    defaultValue={100}
+                                    max={150}
+                                    message="Brightness"
+                                />
 
 
                                 {/* Model options only for phones */}
@@ -821,6 +882,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                                 </div>
                             </div>
+
+
                         </div>
                     </div>
 
@@ -840,15 +903,13 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                                 size={"sm"}
                                 className="w-full"
-                                onClick={() => saveConfiguration(
-                                    // {
-                                    //     configId,
-                                    //     color: options.color.value,
-                                    //     finish: options.finish.value,
-                                    //     material: options.material.value,
-                                    //     model: options.model.value
-                                    // }
-                                )}
+                                onClick={() => saveConfig({
+                                    configId,
+                                    color: options.color.value,
+                                    finish: options.finish.value,
+                                    material: options.material.value,
+                                    model: "atmcard"
+                                })}
                             >
                                 Continue
                                 <ArrowRight className="size-4 ml-1.5 inline " />

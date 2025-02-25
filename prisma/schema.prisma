@@ -26,6 +26,7 @@ enum PhoneModel {
   iphone14
   iphone15
   iphone16
+  atmcard
 }
 
 enum CaseMaterial {
