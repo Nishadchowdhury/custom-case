@@ -11,7 +11,7 @@ const Card: React.FC<pageProps> = ({ className, imgSrc, dark = false, ...props }
 
     return (
         <div
-            className={cn('relative pointer-events-none z-50 overflow-hidden', className)}
+            className={cn('relative pointer-events-none z-50 overflow-hidden ', className)}
             {...props}
         >
             <img

@@ -1,6 +1,8 @@
 import { db } from "@/app/db";
 import { notFound } from "next/navigation";
 import DesignPreview from "./DesignPreview";
+import { Suspense } from "react";
+import FallBackLoadingUi from "../../../../components/custom/FallBackLoadingUi";
 
 interface pageProps {
     searchParams: {
@@ -24,7 +26,12 @@ const Page: React.FC<pageProps> = async ({ searchParams }) => {
 
 
 
-    return <DesignPreview configuration={configuration} />
+    return <Suspense
+        fallback={<FallBackLoadingUi message="Please wait..." />}
+    >
+        <DesignPreview configuration={configuration}
+        />
+    </Suspense>
 
 }
 

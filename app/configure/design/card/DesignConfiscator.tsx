@@ -246,6 +246,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     async function saveConfiguration() {
         // if (!phoneCaseRef.current) return // to get rid from the error of TS cz we destructured "phoneCaseRef.current?.getBoundingClientRect()" but if the ref.current is undefined then the user won't know what happened here and that's why we need to use other way.
 
+       
+
         try {
 
             /*this is the portion of calculating the sizes and dimensions of the structures of card and case. */
@@ -378,7 +380,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
             const blob = base64ToBlob(base64data, "image/png") // turning into a blob object
             const file = new File([blob], String('CROP_' + Date.now() + "_file.png"), { type: "image/png" });
 
-            navigator.clipboard.writeText(base64)
+            // navigator.clipboard.writeText(base64)
             // return console.log(base64);
 
 
@@ -925,32 +927,6 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 }
 
-{/*
-
-these are the predicted dynamic classes of tailwind css.
-
-<h1 className=
-"
-bg-zinc-900 
-bg-blue-950 
-bg-rose-950 
-bg-sky-600
-bg-green-700
-bg-orange-800
-border-zinc-900 
-border-blue-950 
-border-rose-950   
-border-sky-600   
-border-green-700   
-border-orange-800   
-
-
-hidden
-"
-
-/>
-
-*/ }
 
 // export default dynamic(() => Promise.resolve(DesignConfiscator), { ssr: false });
 export default DesignConfiscator;

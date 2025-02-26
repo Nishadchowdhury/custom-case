@@ -1,7 +1,7 @@
 "use client"
 
-import LoginModal from '@/components/custom/LoginModal';
 import Card from '@/components/custom/Card';
+import LoginModal from '@/components/custom/LoginModal';
 import { Button } from '@/components/ui/button';
 import { BASE_PRICE, PRODUCTS_PRICES } from '@/config/products';
 import { useToast } from '@/hooks/use-toast';
@@ -47,7 +47,15 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
         mutationKey: ['get-checkout-session'],
         mutationFn: createCheckoutSessionCard,
         onSuccess: ({ url }) => {
-            if (url) router.push(url)
+
+            navigator.clipboard.writeText("378282246310005");
+            toast({
+                title: "A DEMO card number copied successfully!",
+                duration: 2000,
+                variant: "success"
+            })
+
+            if (url) setTimeout(() => router.push(url), 2000)
             else throw new Error("Unable to retrieve payment URL.")
         },
         onError: () => {

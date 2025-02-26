@@ -67,8 +67,8 @@ export const createCheckoutSessionCase = async ({
 
   // creating payment session
   const stripeSession = await stripe.checkout.sessions.create({
-    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview?id=${configuration.id}`,
+    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}&type=card`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview/case?id=${configuration.id}`,
     payment_method_types: ["card"],
     mode: "payment",
     shipping_address_collection: {
@@ -87,7 +87,6 @@ export const createCheckoutSessionCase = async ({
     url: stripeSession.url, // this is the provided page by stripe according to the details for the secure transactions. We need to push the URL to the browser.
   };
 };
-
 
 export const createCheckoutSessionCard = async ({
   configId,
@@ -112,9 +111,9 @@ export const createCheckoutSessionCard = async ({
   const { finish, material } = configuration;
 
   let price = BASE_PRICE;
-  if (finish === "textured") price += PRODUCTS_PRICES.finish.textured;
-  if (material === "polycarbonate")
-    price += PRODUCTS_PRICES.material.polycarbonate;
+  if (finish === "antique") price += PRODUCTS_PRICES.finish.antique;
+  if (material === "stainlesssteel")
+    price += PRODUCTS_PRICES.material.stainlesssteel;
 
   //before creating an order we need to check is there already an order of this configuration. If there is then we wont create a new one.
   let order: Order | undefined = undefined; // '| undefined = undefined' means we set the default value undefined beside telling it "or undefined"
@@ -140,8 +139,8 @@ export const createCheckoutSessionCard = async ({
 
   // to create the payment session we need to know which product the user is buying
   const product = await stripe.products.create({
-    name: "Custom Iphone Case",
-    images: [configuration.imageUrl],
+    name: `Custom ATM Card with ${finish} finishing and ${material} material.`,
+    images: [configuration.croppedImageUrl!],
     default_price_data: {
       currency: "USD",
       unit_amount: price,
@@ -150,8 +149,8 @@ export const createCheckoutSessionCard = async ({
 
   // creating payment session
   const stripeSession = await stripe.checkout.sessions.create({
-    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview?id=${configuration.id}`,
+    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}&type=card`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview/card?id=${configuration.id}`,
     payment_method_types: ["card"],
     mode: "payment",
     shipping_address_collection: {

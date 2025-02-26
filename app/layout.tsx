@@ -39,3 +39,27 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+
+{/*
+these are the predicted dynamic classes of tailwind css.
+<h1 className=
+"
+bg-zinc-900 
+bg-blue-950 
+bg-rose-950 
+bg-sky-600
+bg-green-700
+bg-orange-800
+border-zinc-900 
+border-blue-950 
+border-rose-950   
+border-sky-600   
+border-green-700   
+border-orange-800   
+
+hidden
+"
+/>
+*/ }

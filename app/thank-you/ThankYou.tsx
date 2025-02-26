@@ -9,6 +9,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import PhonePreview from "@/components/custom/PhonePreview";
 import { formatePrice } from "@/lib/utils";
+import Card from "../../components/custom/Card";
+import { COLORS, FINISHES, MATERIALS } from "../../validators/option-validator";
+import { BASE_PRICE } from "../../config/products";
 
 interface pageProps {
 
@@ -17,7 +20,10 @@ const ThankYou: React.FC<pageProps> = () => {
 
 
     const searchParams = useSearchParams()
-    const orderId = searchParams.get("orderId") || ''
+    const { orderId, type } = { orderId: searchParams.get("orderId") || "", type: searchParams.get("type") || "" }
+
+
+
     const [open, setOpen] = useState(true)
     const { data, isError, error } = useQuery({
         queryKey: ['get-payment-status'],
@@ -81,9 +87,13 @@ const ThankYou: React.FC<pageProps> = () => {
     }
 
     const { configuration, BillingAddress, ShippingAddress, amount } = data;
+
     const { color } = configuration;
+    const colorObject = COLORS.find(color_ => color_.value === color)
 
-
+    const finishPrice = FINISHES.options.find(({ value }) => value === configuration.finish)?.price!
+    const materialPrice = MATERIALS.options.find(({ value }) => value === configuration.material)?.price!
+    const totalPrice = (BASE_PRICE + ((finishPrice || 0) + (materialPrice || 0))) / 100
 
     return (
         <div className='bg-white ' >
@@ -104,16 +114,24 @@ const ThankYou: React.FC<pageProps> = () => {
                     <div className="mt-10 flex flex-auto flex-col" >
                         <h4 className="font-semibold text-zinc-900" >You made a grate choice!</h4>
                         <p className="mt-2 text-sm text-zinc-600" >
-                            We at CaseCobra believe that a phone case doesn't  only need to look good, but also last you for the years to come. We offer a 5-year print guarantee: If your case isn't highest quality, we'll replace it for Free.
+                            We at CaseCobra believe that <strong>{type === "case" ? "a phone case" : "an ATM card"}</strong> doesn't only need to look good, but also last you for the years to come. We offer a 5-year print guarantee: If your {type} isn't highest quality, <strong>we'll replace it for Free</strong>.
                         </p>
                     </div>
                 </div>
 
                 <div className="flex space-x-6 overflow-hidden mt-4 rounded-xl bg-gray-900/5 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl " >
-                    <PhonePreview
-                        croppedImageUrl={configuration.croppedImageUrl!}
-                        color={configuration.color!}
-                    />
+                    {type === "case"
+                        ?
+                        <PhonePreview
+                            croppedImageUrl={configuration.croppedImageUrl!}
+                            color={configuration.color!}
+                        />
+                        :
+                        <Card
+                            imgSrc={configuration.croppedImageUrl || ""}
+                            className={`bg-${colorObject?.tw}`}
+                        />
+                    }
                 </div>
 
 
@@ -159,7 +177,7 @@ const ThankYou: React.FC<pageProps> = () => {
                 <div className="space-y-6 border-t border-zinc-200 pt-10 text-sm  ">
                     <div className="flex justify-between " >
                         <p className="font-medium text-zinc-900" >Subtotal</p>
-                        <p className=" text-zinc-700" > {formatePrice(amount)} </p>
+                        <p className=" text-zinc-700" > {formatePrice(totalPrice)} </p>
                     </div>
                     <div className="flex justify-between " >
                         <p className="font-medium text-zinc-900" >Shipping</p>
@@ -167,7 +185,7 @@ const ThankYou: React.FC<pageProps> = () => {
                     </div>
                     <div className="flex justify-between " >
                         <p className="font-medium text-zinc-900" >Total</p>
-                        <p className=" text-zinc-700" > {formatePrice(amount + 0)} </p>
+                        <p className=" text-zinc-700" > {formatePrice(totalPrice)} </p>
                     </div>
                 </div>
 

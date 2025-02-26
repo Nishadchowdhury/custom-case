@@ -37,7 +37,7 @@ const PhonePreview: React.FC<pageProps> = ({ croppedImageUrl, color }) => {
     if (color === 'blue') caseBackgroundColor = 'bg-blue-950'
     if (color === 'rose') caseBackgroundColor = 'bg-rose-950'
 
-    console.log(renderedDimensions);
+    // console.log(renderedDimensions);
     return (
         <AspectRatio
             ref={ref}
