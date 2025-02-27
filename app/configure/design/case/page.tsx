@@ -29,11 +29,8 @@ const page: React.FC<pageProps> = async ({ searchParams }) => { // server compon
 
     const { imageUrl, width, height } = configuration;
 
-    return <Suspense
-        fallback={<FallBackLoadingUi message="Please wait..." />}
-    >
-        <DesignConfiscator configId={configuration.id} imageDimensions={{ width, height }} imageUrl={imageUrl} type={"case"} />
-    </Suspense>
+    return <DesignConfiscator configId={configuration.id} imageDimensions={{ width, height }} imageUrl={imageUrl} type={"case"} />
+
 
 }
 
