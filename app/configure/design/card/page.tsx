@@ -1,6 +1,8 @@
 import { db } from "@/app/db";
 import { notFound } from "next/navigation";
 import DesignConfiscator from "./DesignConfiscator";
+import { Suspense } from "react";
+import FallBackLoadingUi from "../../../../components/custom/FallBackLoadingUi";
 
 interface pageProps {
     searchParams: {
@@ -27,7 +29,8 @@ const page: React.FC<pageProps> = async ({ searchParams }) => { // server compon
 
     const { imageUrl, width, height } = configuration;
 
-    return <DesignConfiscator configId={configuration.id} imageDimensions={{ width, height }} imageUrl={imageUrl} type={'card'} />
+    return  <DesignConfiscator configId={configuration.id} imageDimensions={{ width, height }} imageUrl={imageUrl} type={'card'} />
+  
 
 }
 

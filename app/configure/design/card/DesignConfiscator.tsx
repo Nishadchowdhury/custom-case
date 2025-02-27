@@ -6,7 +6,7 @@ import { cn, formatePrice, getCardType } from "@/lib/utils";
 import NextImage from 'next/image'
 import { Rnd } from 'react-rnd'
 import { RadioGroup } from '@headlessui/react'
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { COLORS, FINISHES, MATERIALS, MODELS, RATIOS } from "@/validators/option-validator";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -19,6 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { saveConfig as _saveConfig, SaveConfigArgs } from "../action";
 import { useRouter } from "next/navigation";
 import { SliderInput } from "./components/SliderInput";
+import FallBackLoadingUi from "../../../../components/custom/FallBackLoadingUi";
 
 interface pageProps {
     configId: string;
@@ -246,7 +247,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
     async function saveConfiguration() {
         // if (!phoneCaseRef.current) return // to get rid from the error of TS cz we destructured "phoneCaseRef.current?.getBoundingClientRect()" but if the ref.current is undefined then the user won't know what happened here and that's why we need to use other way.
 
-       
+
 
         try {
 
@@ -460,469 +461,474 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
     return (
-        <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 '>
-            <div
-                ref={containerRef}
-                className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
+        <Suspense
+            fallback={<FallBackLoadingUi message="Please wait..." />}
+        >
+            <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 '>
                 <div
-                    className={cn("relative bg-opacity-50 pointer-events-none  _3:58:00_ ",
-                        `aspect-[${aspects.w}/${aspects.h}]`,
-                        type === 'case' ? 'w-60' : "w-96"
-                    )}
-
-
+                    ref={containerRef}
+                    className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
-                    <AspectRatio
-                        ref={phoneCaseRef}
-                        ratio={aspects.w / aspects.h} //the ratio of the phone png we're gonna use
-                        className={cn("pointer-events-none relative z-40 w-full font-sans text-white",
-                            `aspect-[${aspects.w}/${aspects.h}]`
+                    <div
+                        className={cn("relative bg-opacity-50 pointer-events-none  _3:58:00_ ",
+                            `aspect-[${aspects.w}/${aspects.h}]`,
+                            type === 'case' ? 'w-60' : "w-96"
                         )}
 
 
                     >
-                        <NextImage
-                            alt="Card Image"
-                            src={RATIOS.card.src}
-                            className="pointer-events-none z-40 select-none"
-                            fill
-                        />
-
-                        {/* CVV card security number */}
-                        <input
-                            type="text"
-                            name="cvv"
-                            id=""
-                            className="z-50 bg-transparent  focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
-                            style={{
-                                left: caseDimensions.width - (caseDimensions.width / 6),
-                                top: caseDimensions.height / 3.45 + 'px',
-                                width: caseDimensions.width / 9 + 'px',
-                                fontSize: caseDimensions.width / 22 + 'px'
-                            }}
-                            placeholder="XXXX"
-                            autoComplete="off"
-                            ref={cvvRef}
-
-                            onChange={e => cardDataSetter(e.target.value, "cvv")}
-                            value={cardData.cvv}
-                            maxLength={4}
-                            disabled={imageMoving}
+                        <AspectRatio
+                            ref={phoneCaseRef}
+                            ratio={aspects.w / aspects.h} //the ratio of the phone png we're gonna use
+                            className={cn("pointer-events-none relative z-40 w-full font-sans text-white",
+                                `aspect-[${aspects.w}/${aspects.h}]`
+                            )}
 
 
-                        />
-
-                        {/* card number */}
-                        <input
-                            type="text"
-                            id=""
-                            name="cardNumber"
-                            className="z-50 bg-transparent focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
-                            style={{
-                                left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
-                                top: caseDimensions.height / 2.4 + 'px',
-                                width: caseDimensions.width / 2 + 'px',
-                                fontSize: caseDimensions.width / 22 + 'px'
-                            }}
-                            placeholder="XXXX XXXX XXXX XXXX"
-                            autoComplete="off"
-
-                            ref={cardNumberRef}
-                            onChange={e => cardDataSetter((e.target.value).replace(/\s+/g, ''), "cardNumber")} // this regex removes spaces
-                            value={cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& ')} // this regex adds spaces after every 4 numbers
-                            maxLength={(Number(cardType.numberLength) + 3)}
-                            disabled={imageMoving}
-                        />
-
-
-
-                        {/* card expire date */}
-                        <div
-                            style={{
-                                left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
-                                top: caseDimensions.height / 1.7 + 'px',
-                                width: caseDimensions.width / 2 + 'px',
-                            }}
-                            className=" absolute"
                         >
-                            <span
-                                style={{
-                                    fontSize: caseDimensions.width / 28 + 'px',
-                                    textAlign: 'start',
-                                    display: "block",
-                                }}
-                            >
-                                Valid Thru
-                            </span>
-                            <input
-                                type="text"
-                                name="date"
-                                id=""
-                                className="z-50 w-full bg-transparent focus:outline-none focus:border-none text-white pointer-events-auto disabled:pointer-events-none"
-                                placeholder="MM/YY"
-                                autoComplete="off"
-                                maxLength={5}
-                                disabled={imageMoving}
-                                ref={expireDateRef}
-                                style={{
-
-                                    fontSize: caseDimensions.width / 22 + 'px'
-                                }}
-
-                                onChange={e => cardDataSetter((e.target.value).replace(/\//g, ''), "expireDate")}
-                                value={cardData.expireDate.length <= 2 ? cardData.expireDate : [cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/')}
-                            />
-
-                            <input
-                                type="text"
-                                name="name"
-                                id=""
-                                className="z-50 uppercase bg-transparent focus:outline-none focus:border-none text-white pointer-events-auto disabled:pointer-events-none"
-                                placeholder="Your Name"
-                                autoComplete="off"
-                                disabled={imageMoving}
-
-                                style={{
-                                    marginTop: (caseDimensions.height / 40) + "px",
-
-                                    fontSize: caseDimensions.width / 22 + 'px'
-                                }}
-                                onChange={e => cardDataSetter((e.target.value).toUpperCase(), "cardHolderName")}
-                                value={cardData.cardHolderName}
-                            />
-
-                        </div>
-
-                        {
-                            cardType.cardPng &&
-
-                            <img
-                                src={cardType.cardPng}
-                                alt=""
-                                className="object-cover aspect-square absolute outline-1 select-none"
-                                style={{
-
-                                    width: caseDimensions.width / 7 + 'px',
-                                    height: caseDimensions.width / 7 + 'px',
-                                    left: caseDimensions.width - (caseDimensions.width / 5),
-                                    top: caseDimensions.height / 1.7,
-                                }}
-                            />
-                        }
-
-
-                    </AspectRatio>
-                    <div className="absolute z-40 inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px] 
-                    shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
-                    <div
-                        className={cn('absolute inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px]',
-                            `bg-${options.color.tw}`)}
-                    />
-
-                </div>
-
-
-                <Rnd // 4:09:00
-                    default={{
-                        x: 150,
-                        y: 205,
-                        height: imageDimensions.height / 4,
-                        width: imageDimensions.width / 4
-                    }}
-
-                    lockAspectRatio
-                    onResizeStop={(_, __, ref, ___, { x, y }) => { // _ means we won't use this var. 
-                        setRenderedDimension({
-                            height: parseInt(ref.style.height.slice(0, -2)  /*50px*/),
-                            width: parseInt(ref.style.width.slice(0, -2))  /*50px*/
-                        })
-                        setRenderedPosition({ x, y })
-                        setImageMoving(false)
-                    }} // this event will trigger when the resize event is triggered.
-
-                    onDragStop={(_, data) => {
-                        const { x, y } = data;
-                        setRenderedPosition({ x, y });
-                        setImageMoving(false)
-                    }}
-
-                    resizeHandleComponent={{
-                        bottomRight: <HandleComponent />,
-                        bottomLeft: <HandleComponent />,
-                        topRight: <HandleComponent />,
-                        topLeft: <HandleComponent />
-                    }}
-
-                    className="absolute z-20 hover: border-[3px] border-primary select-none "
-
-                    onResizeStart={() => setImageMoving(true)}
-                    onDragStart={() => setImageMoving(true)}
-                >
-                    <div className="relative w-full h-full select-none">
-                        {
-                            envCheck ? <NextImage
-                                src={imageUrl}
+                            <NextImage
+                                alt="Card Image"
+                                src={RATIOS.card.src}
+                                className="pointer-events-none z-40 select-none"
                                 fill
-                                alt="your Image"
-                                className="pointer-events-none"
+                            />
 
+                            {/* CVV card security number */}
+                            <input
+                                type="text"
+                                name="cvv"
+                                id=""
+                                className="z-50 bg-transparent  focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
                                 style={{
-                                    filter: `blur(${blurValue / 5}px)`,
-
+                                    left: caseDimensions.width - (caseDimensions.width / 6),
+                                    top: caseDimensions.height / 3.45 + 'px',
+                                    width: caseDimensions.width / 9 + 'px',
+                                    fontSize: caseDimensions.width / 22 + 'px'
                                 }}
+                                placeholder="XXXX"
+                                autoComplete="off"
+                                ref={cvvRef}
+
+                                onChange={e => cardDataSetter(e.target.value, "cvv")}
+                                value={cardData.cvv}
+                                maxLength={4}
+                                disabled={imageMoving}
+
 
                             />
-                                :
-                                <img
-                                    src={imageUrl}
-                                    alt="your Image"
-                                    className="pointer-events-none"
-                                    style={{ filter: `blur(${blurValue / 5}px)  brightness(${brightnessValue}%)` }}
-                                />
-                        }
-                    </div>
-                </Rnd>
+
+                            {/* card number */}
+                            <input
+                                type="text"
+                                id=""
+                                name="cardNumber"
+                                className="z-50 bg-transparent focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
+                                style={{
+                                    left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
+                                    top: caseDimensions.height / 2.4 + 'px',
+                                    width: caseDimensions.width / 2 + 'px',
+                                    fontSize: caseDimensions.width / 22 + 'px'
+                                }}
+                                placeholder="XXXX XXXX XXXX XXXX"
+                                autoComplete="off"
+
+                                ref={cardNumberRef}
+                                onChange={e => cardDataSetter((e.target.value).replace(/\s+/g, ''), "cardNumber")} // this regex removes spaces
+                                value={cardData.cardNumber.replace(/\d{4}(?=.)/g, '$& ')} // this regex adds spaces after every 4 numbers
+                                maxLength={(Number(cardType.numberLength) + 3)}
+                                disabled={imageMoving}
+                            />
 
 
-            </div>
 
-            <div className="h-[37.5rem] w-full col-span-full lg:col-span-1 flex flex-col bg-white ">
-                <ScrollArea
-
-                    className="relative flex-1 overflow-auto "
-                >
-                    <div
-                        className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none "
-                        aria-hidden
-                    />
-
-
-                    <div
-                        className="px-8 pb-12 pt-8"
-                    >
-                        <h2>Customize your Card</h2>
-
-                        <div
-                            className="w-full h-px bg-zinc-200 my-6 "
-                        />
-
-                        <div
-                            className="relative mt-4 h-full flex flex-col justify-between "
-                        >
-                            <div className="flex flex-col gap-6 " >
-
-                                {/* colors options */}
-                                <RadioGroup
-                                    value={options.color}
-                                    onChange={(value) => {
-                                        setOptions((prev) => {
-                                            return {
-                                                ...prev,
-                                                color: value
-                                            }
-                                        })
+                            {/* card expire date */}
+                            <div
+                                style={{
+                                    left: caseDimensions.width - (caseDimensions.width / 1.14) + 'px',
+                                    top: caseDimensions.height / 1.7 + 'px',
+                                    width: caseDimensions.width / 2 + 'px',
+                                }}
+                                className=" absolute"
+                            >
+                                <span
+                                    style={{
+                                        fontSize: caseDimensions.width / 28 + 'px',
+                                        textAlign: 'start',
+                                        display: "block",
                                     }}
                                 >
-                                    <Label >
-                                        Color: {options.color.label}
-                                    </Label>
+                                    Valid Thru
+                                </span>
+                                <input
+                                    type="text"
+                                    name="date"
+                                    id=""
+                                    className="z-50 w-full bg-transparent focus:outline-none focus:border-none text-white pointer-events-auto disabled:pointer-events-none"
+                                    placeholder="MM/YY"
+                                    autoComplete="off"
+                                    maxLength={5}
+                                    disabled={imageMoving}
+                                    ref={expireDateRef}
+                                    style={{
 
-                                    <div
-                                        className="mt-3 flex items-center space-x-3"
-                                    >
-                                        {
-                                            COLORS.map((color) => (
-                                                <RadioGroup.Option
-                                                    key={color.label}
-                                                    value={color}
-                                                    className={({ active, checked }) => cn('relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 active:ring-0 focus:ring-0 active:outline-none focus:outline-none border-2 border-transparent ',
-                                                        {
-                                                            [`border-${color.tw}`]: active || checked // cn function doesn't support template string directly in conditions so [``] needed here.
-                                                        }
-                                                    )
-                                                    }
-                                                >
-                                                    <span
-                                                        className={cn(`bg-${color.tw}`, "h-8 w-8 rounded-full border-black border-opacity-10  ")}
-                                                    />
-                                                </RadioGroup.Option>
-                                            ))
-                                        }
-                                    </div>
-                                </RadioGroup>
+                                        fontSize: caseDimensions.width / 22 + 'px'
+                                    }}
 
-                                {/* managing blur effect */}
-                                <SliderInput
-                                    value={blurValue}
-                                    setValue={setBlurValue}
-                                    defaultValue={0}
-                                    message="Blur Effect"
+                                    onChange={e => cardDataSetter((e.target.value).replace(/\//g, ''), "expireDate")}
+                                    value={cardData.expireDate.length <= 2 ? cardData.expireDate : [cardData.expireDate.slice(0, 2), cardData.expireDate.slice(2, 4)].join('/')}
                                 />
 
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id=""
+                                    className="z-50 uppercase bg-transparent focus:outline-none focus:border-none text-white pointer-events-auto disabled:pointer-events-none"
+                                    placeholder="Your Name"
+                                    autoComplete="off"
+                                    disabled={imageMoving}
 
-                                {/* managing brightness */}
-                                <SliderInput
-                                    value={brightnessValue}
-                                    setValue={setBrightnessValue}
-                                    defaultValue={100}
-                                    max={150}
-                                    message="Brightness"
+                                    style={{
+                                        marginTop: (caseDimensions.height / 40) + "px",
+
+                                        fontSize: caseDimensions.width / 22 + 'px'
+                                    }}
+                                    onChange={e => cardDataSetter((e.target.value).toUpperCase(), "cardHolderName")}
+                                    value={cardData.cardHolderName}
                                 />
 
-
-                                {/* Model options only for phones */}
-                                <div className="relative flex flex-col gap-3 w-full ">
-                                    {isCase && (
-                                        <>
-                                            <Label>Model</Label>
-                                            <DropdownMenu >
-                                                <DropdownMenuTrigger asChild /*the child will be printed here*/ >
-                                                    <Button
-                                                        variant={'outline'}
-                                                        role="combobox"
-                                                        className="w-full justify-between"
-                                                    >
-                                                        {options.model.label}
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-
-                                                <DropdownMenuContent >
-                                                    {MODELS.options.map((model) => (
-                                                        <DropdownMenuItem
-                                                            key={model.label}
-                                                            className={cn('flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100', {
-                                                                "bg-zinc-100": model.label === options.model.label
-                                                            })}
-                                                            onClick={() => {
-                                                                setOptions((prev) => ({ ...prev, model }))
-                                                            }}
-                                                        >
-                                                            <Check className={cn('mr-2 h-4 w-4 ',
-                                                                model.label === options.model.label ? "opacity-100" : "opacity-0"
-                                                            )} />
-                                                            {model.label}
-                                                        </DropdownMenuItem>
-                                                    ))}
-                                                </DropdownMenuContent>
-
-                                            </DropdownMenu>
-                                        </>)
-                                    }
-
-                                    {
-                                        [MATERIALS, FINISHES].map(({ name, options: selectableOptions }) => (
-                                            <RadioGroup
-                                                key={name}
-                                                value={options[name]}
-                                                onChange={(value) => {
-                                                    setOptions((prev) => ({
-                                                        ...prev,
-                                                        [name]: value
-                                                    }));
-                                                }}
-                                            >
-                                                <Label>
-                                                    {name.slice(0, 1).toUpperCase() + name.slice(1)} {/* making first latter capital by js */}
-                                                </Label>
-                                                <div className="mt-3 space-y-4" >
-                                                    {
-                                                        selectableOptions.slice(isCase ? 0 : 2, isCase ? 2 : 4).map((option) => (
-                                                            <RadioGroup.Option
-
-                                                                key={option.value}
-                                                                value={option}
-                                                                className={({ active, checked }) => cn(
-                                                                    "relative block cursor-pointer rounded-lg bg-white px-6 py-4 shadow-sm border-2 border-zinc-200 focus:outline-none ring-0 focus:ring-0 outline-none sm:flex sm:justify-between",
-                                                                    {
-                                                                        'border-primary': active || checked
-                                                                    }
-                                                                )}
-                                                            >
-                                                                <span className="flex items-center" >
-                                                                    <span className="flex flex-col text-sm  ">
-                                                                        <RadioGroup.Label
-                                                                            as="span"
-                                                                            className='font-medium text-gray-900  '
-                                                                        >
-                                                                            {option.label}
-                                                                        </RadioGroup.Label>
-
-                                                                        {
-                                                                            option.description ? (
-                                                                                <RadioGroup.Description as='span'
-                                                                                    className={'text-gray-500'}
-                                                                                >
-                                                                                    <span className="block sm:inline whitespace-nowrap" >
-                                                                                        {option.description}
-                                                                                    </span>
-                                                                                </RadioGroup.Description>
-                                                                            )
-                                                                                : null
-                                                                        }
-                                                                    </span>
-                                                                </span>
-
-                                                                <RadioGroup.Description as="span"
-                                                                    className={'mt-2 flex text-sm sm:ml-4 sm:mt-0 sm:flex-col sm:text-right '}
-                                                                >
-                                                                    <span
-                                                                        className="font-medium text-gray-900 "
-                                                                    >
-                                                                        {formatePrice(option.price / 100)}
-                                                                    </span>
-                                                                </RadioGroup.Description>
-
-                                                            </RadioGroup.Option>
-                                                        ))
-                                                    }
-                                                </div>
-                                            </RadioGroup>
-                                        ))
-                                    }
-
-                                </div>
                             </div>
 
+                            {
+                                cardType.cardPng &&
 
-                        </div>
+                                <img
+                                    src={cardType.cardPng}
+                                    alt=""
+                                    className="object-cover aspect-square absolute outline-1 select-none"
+                                    style={{
+
+                                        width: caseDimensions.width / 7 + 'px',
+                                        height: caseDimensions.width / 7 + 'px',
+                                        left: caseDimensions.width - (caseDimensions.width / 5),
+                                        top: caseDimensions.height / 1.7,
+                                    }}
+                                />
+                            }
+
+
+                        </AspectRatio>
+                        <div className="absolute z-40 inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px] 
+                    shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
+                        <div
+                            className={cn('absolute inset-0 left-[3px] top-px right-[3px] bottom-px rounded-[32px]',
+                                `bg-${options.color.tw}`)}
+                        />
+
                     </div>
 
-                </ScrollArea>
 
-                <div className="w-full px-8 h-1/6 bg-white">
-                    <div className="h-px w-full bg-zinc-200  " />
-                    <div className="w-full h-full flex justify-end items-center">
-                        <div className="w-full flex gap-6 items-center ">
-                            <p className="font-medium whitespace-nowrap">
-                                {formatePrice((BASE_PRICE + options.finish.price + options.material.price) / 100)}
-                            </p>
-                            <Button
-                                isLoading={isPending}
-                                loadingText='Saving'
-                                disabled={isPending}
+                    <Rnd // 4:09:00
+                        default={{
+                            x: 150,
+                            y: 205,
+                            height: imageDimensions.height / 4,
+                            width: imageDimensions.width / 4
+                        }}
 
-                                size={"sm"}
-                                className="w-full"
-                                onClick={() => saveConfig({
-                                    configId,
-                                    color: options.color.value,
-                                    finish: options.finish.value,
-                                    material: options.material.value,
-                                    model: "atmcard"
-                                })}
-                            >
-                                Continue
-                                <ArrowRight className="size-4 ml-1.5 inline " />
-                            </Button>
+                        lockAspectRatio
+                        onResizeStop={(_, __, ref, ___, { x, y }) => { // _ means we won't use this var. 
+                            setRenderedDimension({
+                                height: parseInt(ref.style.height.slice(0, -2)  /*50px*/),
+                                width: parseInt(ref.style.width.slice(0, -2))  /*50px*/
+                            })
+                            setRenderedPosition({ x, y })
+                            setImageMoving(false)
+                        }} // this event will trigger when the resize event is triggered.
+
+                        onDragStop={(_, data) => {
+                            const { x, y } = data;
+                            setRenderedPosition({ x, y });
+                            setImageMoving(false)
+                        }}
+
+                        resizeHandleComponent={{
+                            bottomRight: <HandleComponent />,
+                            bottomLeft: <HandleComponent />,
+                            topRight: <HandleComponent />,
+                            topLeft: <HandleComponent />
+                        }}
+
+                        className="absolute z-20 hover: border-[3px] border-primary select-none "
+
+                        onResizeStart={() => setImageMoving(true)}
+                        onDragStart={() => setImageMoving(true)}
+                    >
+                        <div className="relative w-full h-full select-none">
+                            {
+                                envCheck ? <NextImage
+                                    src={imageUrl}
+                                    fill
+                                    alt="your Image"
+                                    className="pointer-events-none"
+
+                                    style={{
+                                        filter: `blur(${blurValue / 5}px)`,
+
+                                    }}
+
+                                />
+                                    :
+                                    <img
+                                        src={imageUrl}
+                                        alt="your Image"
+                                        className="pointer-events-none"
+                                        style={{ filter: `blur(${blurValue / 5}px)  brightness(${brightnessValue}%)` }}
+                                    />
+                            }
                         </div>
-                    </div>
+                    </Rnd>
+
+
                 </div>
+
+                <div className="h-[37.5rem] w-full col-span-full lg:col-span-1 flex flex-col bg-white ">
+                    <ScrollArea
+
+                        className="relative flex-1 overflow-auto "
+                    >
+                        <div
+                            className="absolute z-10 inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white pointer-events-none "
+                            aria-hidden
+                        />
+
+
+                        <div
+                            className="px-8 pb-12 pt-8"
+                        >
+                            <h2>Customize your Card</h2>
+
+                            <div
+                                className="w-full h-px bg-zinc-200 my-6 "
+                            />
+
+                            <div
+                                className="relative mt-4 h-full flex flex-col justify-between "
+                            >
+                                <div className="flex flex-col gap-6 " >
+
+                                    {/* colors options */}
+                                    <RadioGroup
+                                        value={options.color}
+                                        onChange={(value) => {
+                                            setOptions((prev) => {
+                                                return {
+                                                    ...prev,
+                                                    color: value
+                                                }
+                                            })
+                                        }}
+                                    >
+                                        <Label >
+                                            Color: {options.color.label}
+                                        </Label>
+
+                                        <div
+                                            className="mt-3 flex items-center space-x-3"
+                                        >
+                                            {
+                                                COLORS.map((color) => (
+                                                    <RadioGroup.Option
+                                                        key={color.label}
+                                                        value={color}
+                                                        className={({ active, checked }) => cn('relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 active:ring-0 focus:ring-0 active:outline-none focus:outline-none border-2 border-transparent ',
+                                                            {
+                                                                [`border-${color.tw}`]: active || checked // cn function doesn't support template string directly in conditions so [``] needed here.
+                                                            }
+                                                        )
+                                                        }
+                                                    >
+                                                        <span
+                                                            className={cn(`bg-${color.tw}`, "h-8 w-8 rounded-full border-black border-opacity-10  ")}
+                                                        />
+                                                    </RadioGroup.Option>
+                                                ))
+                                            }
+                                        </div>
+                                    </RadioGroup>
+
+                                    {/* managing blur effect */}
+                                    <SliderInput
+                                        value={blurValue}
+                                        setValue={setBlurValue}
+                                        defaultValue={0}
+                                        message="Blur Effect"
+                                    />
+
+
+                                    {/* managing brightness */}
+                                    <SliderInput
+                                        value={brightnessValue}
+                                        setValue={setBrightnessValue}
+                                        defaultValue={100}
+                                        max={150}
+                                        message="Brightness"
+                                    />
+
+
+                                    {/* Model options only for phones */}
+                                    <div className="relative flex flex-col gap-3 w-full ">
+                                        {isCase && (
+                                            <>
+                                                <Label>Model</Label>
+                                                <DropdownMenu >
+                                                    <DropdownMenuTrigger asChild /*the child will be printed here*/ >
+                                                        <Button
+                                                            variant={'outline'}
+                                                            role="combobox"
+                                                            className="w-full justify-between"
+                                                        >
+                                                            {options.model.label}
+                                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 " />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+
+                                                    <DropdownMenuContent >
+                                                        {MODELS.options.map((model) => (
+                                                            <DropdownMenuItem
+                                                                key={model.label}
+                                                                className={cn('flex text-sm gap-1 items-center p-1.5 cursor-default hover:bg-zinc-100', {
+                                                                    "bg-zinc-100": model.label === options.model.label
+                                                                })}
+                                                                onClick={() => {
+                                                                    setOptions((prev) => ({ ...prev, model }))
+                                                                }}
+                                                            >
+                                                                <Check className={cn('mr-2 h-4 w-4 ',
+                                                                    model.label === options.model.label ? "opacity-100" : "opacity-0"
+                                                                )} />
+                                                                {model.label}
+                                                            </DropdownMenuItem>
+                                                        ))}
+                                                    </DropdownMenuContent>
+
+                                                </DropdownMenu>
+                                            </>)
+                                        }
+
+                                        {
+                                            [MATERIALS, FINISHES].map(({ name, options: selectableOptions }) => (
+                                                <RadioGroup
+                                                    key={name}
+                                                    value={options[name]}
+                                                    onChange={(value) => {
+                                                        setOptions((prev) => ({
+                                                            ...prev,
+                                                            [name]: value
+                                                        }));
+                                                    }}
+                                                >
+                                                    <Label>
+                                                        {name.slice(0, 1).toUpperCase() + name.slice(1)} {/* making first latter capital by js */}
+                                                    </Label>
+                                                    <div className="mt-3 space-y-4" >
+                                                        {
+                                                            selectableOptions.slice(isCase ? 0 : 2, isCase ? 2 : 4).map((option) => (
+                                                                <RadioGroup.Option
+
+                                                                    key={option.value}
+                                                                    value={option}
+                                                                    className={({ active, checked }) => cn(
+                                                                        "relative block cursor-pointer rounded-lg bg-white px-6 py-4 shadow-sm border-2 border-zinc-200 focus:outline-none ring-0 focus:ring-0 outline-none sm:flex sm:justify-between",
+                                                                        {
+                                                                            'border-primary': active || checked
+                                                                        }
+                                                                    )}
+                                                                >
+                                                                    <span className="flex items-center" >
+                                                                        <span className="flex flex-col text-sm  ">
+                                                                            <RadioGroup.Label
+                                                                                as="span"
+                                                                                className='font-medium text-gray-900  '
+                                                                            >
+                                                                                {option.label}
+                                                                            </RadioGroup.Label>
+
+                                                                            {
+                                                                                option.description ? (
+                                                                                    <RadioGroup.Description as='span'
+                                                                                        className={'text-gray-500'}
+                                                                                    >
+                                                                                        <span className="block sm:inline whitespace-nowrap" >
+                                                                                            {option.description}
+                                                                                        </span>
+                                                                                    </RadioGroup.Description>
+                                                                                )
+                                                                                    : null
+                                                                            }
+                                                                        </span>
+                                                                    </span>
+
+                                                                    <RadioGroup.Description as="span"
+                                                                        className={'mt-2 flex text-sm sm:ml-4 sm:mt-0 sm:flex-col sm:text-right '}
+                                                                    >
+                                                                        <span
+                                                                            className="font-medium text-gray-900 "
+                                                                        >
+                                                                            {formatePrice(option.price / 100)}
+                                                                        </span>
+                                                                    </RadioGroup.Description>
+
+                                                                </RadioGroup.Option>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                </RadioGroup>
+                                            ))
+                                        }
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </ScrollArea>
+
+                    <div className="w-full px-8 h-1/6 bg-white">
+                        <div className="h-px w-full bg-zinc-200  " />
+                        <div className="w-full h-full flex justify-end items-center">
+                            <div className="w-full flex gap-6 items-center ">
+                                <p className="font-medium whitespace-nowrap">
+                                    {formatePrice((BASE_PRICE + options.finish.price + options.material.price) / 100)}
+                                </p>
+                                <Button
+                                    isLoading={isPending}
+                                    loadingText='Saving'
+                                    disabled={isPending}
+
+                                    size={"sm"}
+                                    className="w-full"
+                                    onClick={() => saveConfig({
+                                        configId,
+                                        color: options.color.value,
+                                        finish: options.finish.value,
+                                        material: options.material.value,
+                                        model: "atmcard"
+                                    })}
+                                >
+                                    Continue
+                                    <ArrowRight className="size-4 ml-1.5 inline " />
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div >
 
             </div >
 
-        </div >
+        </Suspense>
     )
 
 }

@@ -26,8 +26,12 @@ const Page: React.FC<pageProps> = async ({ searchParams }) => {
 
 
 
-    return <DesignPreview configuration={configuration} />
-    
+    return <Suspense
+        fallback={<FallBackLoadingUi message="Please wait..." />}
+    >
+        <DesignPreview configuration={configuration} />
+    </Suspense>
+
 
 }
 
