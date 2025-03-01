@@ -100,7 +100,7 @@ const ThankYou: React.FC<pageProps> = () => {
             <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
                 <div className="max-w-xl ">
                     <p className="text-base font-medium text-primary" >Thank you!</p>
-                    <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl" >Your case is on the way!</h1>
+                    <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl" >Your {type} is on the way!</h1>
                     <p className="mt-2 text-base text-zinc-500" >{"We've"} received your order and are now</p>
 
                     <div className="mt-12 text-sm font-medium">

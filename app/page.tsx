@@ -3,12 +3,11 @@ import { Icons } from "@/components/custom/Icons";
 import MaxWidthWrapper from "@/components/custom/MaxWidthWrapper";
 import Phone from "@/components/custom/Phone";
 import Reviews from "@/components/custom/Reviews";
-import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, Check, Star } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Check, Star } from "lucide-react";
 import ItemsOptions from "../components/custom/ItemsOptionsDrawer";
 import MaintenanceModal from "../components/custom/MaintenanceModal";
+import { TextMorphUI } from "../components/ui/text-morph";
+import Card from "../components/custom/Card";
 
 export default function Home() {
   return (
@@ -16,7 +15,7 @@ export default function Home() {
     <div className="bg-slate-50">
 
       {/*  */}
-      <MaintenanceModal /> 
+      <MaintenanceModal />
 
       <section>
         <MaxWidthWrapper
@@ -33,7 +32,11 @@ export default function Home() {
               <h1
                 className="relative w-fit tracking-tight text-balance mt-16 font-bold !leading-tight text-gray-900 text-5xl md:text-6xl lg:text-7xl"
               >
-                Your Image on a <span className="bg-green-600 px-2 text-white ">Custom</span> Phone Case.
+                Your Image on a <span className="bg-green-600 px-2 text-white ">Custom</span> <span> </span>
+                <TextMorphUI
+
+                  texts={['Phone case', "ATM card"]}
+                />
               </h1>
               <p className="mt-8 text-lg lg:pr-10 max-w-prose text-center lg:text-left text-balance md:text-wrap">
                 Capture your favorite memories with your own,
@@ -151,7 +154,7 @@ export default function Home() {
               </span>
               say
             </h2>
-            
+
             <img src="/snake-2.png" alt="" className="w-24 order-0 lg:order-2" />
           </div>
 
@@ -257,9 +260,9 @@ export default function Home() {
             <div className="mx-auto max-w-2xl sm:text-center ">
 
               <h2
-                className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl text-gray-900 "
+                className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-4xl sm:text-5xl md:text-6xl text-gray-900 "
               >
-                Upload your photo and get <span className="relative px-2 mx-2 bg-green-600 text-white" > your own case </span> now
+                Upload your photo and get <span className="relative px-2 mx-2 bg-green-600 text-white" > your own <TextMorphUI texts={["case", "card"]} /></span>now
               </h2>
             </div>
           </div>
@@ -282,7 +285,14 @@ export default function Home() {
                 />
               </div>
 
-              <Phone className="w-60 " imgSrc="/horse_phone.jpg" />
+              <div className="grid grid-flow-row grid-cols-1 gap-3 lg:gap-0 h-full" >
+
+                <div className="grid-col-1  flex items-center justify-center h-full" > <Phone className="w-40 " imgSrc="/horse_phone.jpg" /> </div>
+
+                <div className="grid-col-1 flex items-center justify-center h-full " > <Card className="w-72 rounded-3xl" imgSrc="/horse_card.png" /> </div>
+
+              </div>
+
             </div>
           </div>
 

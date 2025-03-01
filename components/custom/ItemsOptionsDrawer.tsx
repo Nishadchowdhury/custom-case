@@ -71,7 +71,7 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
         <DrawerContent className="" >
             <DrawerHeader className="flex items-center flex-col" >
                 <DrawerTitle>Choose what you want to create</DrawerTitle>
-                <DrawerDescription>This action cannot be undone.</DrawerDescription>
+                <DrawerDescription>Card:- read the instructions.</DrawerDescription>
             </DrawerHeader>
 
             <div className="mx-auto my-5 flex gap-4  " >

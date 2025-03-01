@@ -20,7 +20,7 @@ export function SliderInput({ value, setValue, defaultValue, max, message }: pag
         <div className='flex flex-col items-start gap-0'>
             <div className='flex items-center '>{message && message} <div className='flex items-center ml-2' > <SlidingNumber value={value} />%</div> </div>
 
-            <div className='w-full grid grid-flow-row grid-cols-10  ' >
+            <div className='w-full grid grid-flow-row grid-cols-10 gap-2 ' >
 
                 <Slider
                     defaultValue={[defaultValue || value]}
@@ -31,13 +31,6 @@ export function SliderInput({ value, setValue, defaultValue, max, message }: pag
                     onValueChange={(e) => setValue(e[0])}
                     className='col-span-9  '
                 />
-
-                <div className={buttonVariants({
-                    className: 'col-span-1 size-5',
-                    size: 'icon'
-                })} >
-
-                </div>
 
                 <Button
                     size={"icon"}

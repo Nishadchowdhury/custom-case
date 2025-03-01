@@ -9,12 +9,13 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useState, useTransition } from 'react'
 import Dropzone, { FileRejection } from 'react-dropzone'
 import FallBackLoadingUi from '@/components/custom/FallBackLoadingUi'
+import CardSliderModal from '../../../components/custom/CardSliderModal'
 
 
 
 export default function Page() {
     const type = useSearchParams()?.get("type")
-    
+
     const { toast } = useToast()
     const [isDragOver, setIsDragOver] = useState<boolean>(false)
     const [uploadProgress, setUploadProgress] = useState<number>(0)
@@ -63,6 +64,8 @@ export default function Page() {
         <Suspense
             fallback={<FallBackLoadingUi message="Please wait..." />}
         >
+
+            <CardSliderModal  />
 
             <div className={cn('relative h-full flex-1 my-16 w-full rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl flex justify-center flex-col items-center', {
                 "ring-blue-900/25 bg-blue-900/10": isDragOver

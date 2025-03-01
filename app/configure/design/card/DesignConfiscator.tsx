@@ -20,6 +20,7 @@ import { saveConfig as _saveConfig, SaveConfigArgs } from "../action";
 import { useRouter } from "next/navigation";
 import { SliderInput } from "./components/SliderInput";
 import FallBackLoadingUi from "../../../../components/custom/FallBackLoadingUi";
+import useMounted from "../../../../hooks/use-mounted";
 
 interface pageProps {
     configId: string;
@@ -34,6 +35,8 @@ interface pageProps {
 
 const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "case" }) => {
     const { startUpload, isUploading } = useUploadThing("imageUploader");
+
+    const mounted = useMounted();
 
     const { toast } = useToast();
     const router = useRouter();
@@ -189,13 +192,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
 
-    useEffect(() => {
-        if (phoneCaseRef?.current) {
-            const { width, height } = phoneCaseRef.current.getBoundingClientRect()
-            setCaseDimensions({ width, height })
-        }
 
-    }, [phoneCaseRef])
 
     const envCheck = process.env.NODE_ENV === "production";
     const isCase = type === "case"
@@ -454,6 +451,14 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
     }
 
+    useEffect(() => {
+        if (phoneCaseRef?.current) {
+            const { width, height } = phoneCaseRef.current.getBoundingClientRect()
+            setCaseDimensions({ width, height })
+        }
+
+    }, [phoneCaseRef, mounted])
+
     const aspects = {
         w: RATIOS.card.w,
         h: RATIOS.card.h
@@ -493,12 +498,13 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 fill
                             />
 
+
                             {/* CVV card security number */}
                             <input
                                 type="text"
                                 name="cvv"
                                 id=""
-                                className="z-50 bg-transparent  focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
+                                className="z-50 bg-transparent focus:outline-none focus:border-none absolute pointer-events-auto disabled:pointer-events-none "
                                 style={{
                                     left: caseDimensions.width - (caseDimensions.width / 6),
                                     top: caseDimensions.height / 3.45 + 'px',
@@ -762,7 +768,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                         setValue={setBlurValue}
                                         defaultValue={0}
                                         message="Blur Effect"
-                                        
+
                                     />
 
 
