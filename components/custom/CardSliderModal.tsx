@@ -5,11 +5,22 @@ import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
 import { buttonVariants } from "../ui/button";
 import { SlidingNumber } from "../ui/sliding-number";
 
+import { Card, CardContent } from "@/components/ui/card"
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
+import ClassName from "embla-carousel-class-names"
+import { cn } from "../../lib/utils";
+
 // import Autoplay from "embla-carousel-autoplay"
 
 const CardSliderModal: React.FC = () => {
     const TWEEN_FACTOR_BASE = 0.84
-    const [n, setN] = useState(0)
+    const [snapped, setSnapped] = useState(0)
 
     return <Dialog open>
         <DialogContent
@@ -25,9 +36,6 @@ const CardSliderModal: React.FC = () => {
                     />
                 </div>
 
-                <SlidingNumber value={n} />
-
-                <input type="number" onChange={e => setN(Number(e.target.value))} ></input>
                 <DialogTitle
                     className="text-3xl text-center font-bold tracking-tight text-gray-900 "
                 >
@@ -41,6 +49,36 @@ const CardSliderModal: React.FC = () => {
             </DialogHeader>
 
             <div className="  " >
+
+
+
+                <Carousel className="w-1/2 mx-auto bg-red-400 select-none"
+                    opts={{
+                        loop: true,
+
+                    }}
+
+                    setIndex={setSnapped}
+                >
+                    <CarouselContent>
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <CarouselItem
+                                key={index} className={cn("basis-1/4 duration-1000 opacity-50 transition-opacity", snapped === index && " opacity-100")}
+                                onChange={() => console.log('dara')}
+                            >
+                                <div className={cn("p-1 scale-90 transition-all duration-1000", snapped === index && "scale-100")}>
+                                    <Card>
+                                        <CardContent className="flex items-center justify-center p-6">
+                                            <span className="text-4xl font-semibold">{index + 1}</span>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel >
 
 
             </div>
