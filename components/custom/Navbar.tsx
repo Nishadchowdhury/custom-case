@@ -71,6 +71,7 @@ const Navbar: React.FC<pageProps> = async () => {
                                     className={buttonVariants({ // this function gives all the structure of a shadeCn ui's button
                                         size: "sm",
                                         variant: "ghost",
+                                        className: "hidden sm:flex"
                                     })} >
                                     Sign up
                                 </Link>
@@ -85,14 +86,10 @@ const Navbar: React.FC<pageProps> = async () => {
 
                                 <div className="h-8 w-px bg-zinc-200 hidden sm:block " />
 
-                                <Button
-                                    className={buttonVariants({
-                                        size: "sm",
-                                        className: "hidden sm:flex items-center gap-1"
-                                    })} >
-                                    Create case
-                                    <ArrowRight className="ml-1.5 size-5" />
-                                </Button>
+                                <ItemsOptions
+                                    IsFromServerComp={true}
+                                    triggerText="Create Case"
+                                />
                             </>
                         }
                     </div>

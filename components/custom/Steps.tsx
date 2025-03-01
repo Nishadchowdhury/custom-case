@@ -1,11 +1,14 @@
 "use client"
 
 import { cn } from "@/lib/utils";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import { usePathname, useSearchParams } from "next/navigation";
 
 
 const Steps: React.FC = () => {
 
+    const user = useKindeAuth().getUser()
+    
 
     const searchParams = useSearchParams();
 

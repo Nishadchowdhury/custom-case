@@ -762,6 +762,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                         setValue={setBlurValue}
                                         defaultValue={0}
                                         message="Blur Effect"
+                                        
                                     />
 
 

@@ -151,6 +151,7 @@ export default function Home() {
               </span>
               say
             </h2>
+            
             <img src="/snake-2.png" alt="" className="w-24 order-0 lg:order-2" />
           </div>
 
