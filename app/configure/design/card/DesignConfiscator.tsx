@@ -475,9 +475,8 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                     className="relative h-[37.5rem] overflow-hidden col-span-2 w-full max-w-4xl flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
                     <div
-                        className={cn("relative bg-opacity-50 pointer-events-none  _3:58:00_ ",
-                            `aspect-[${aspects.w}/${aspects.h}]`,
-                            type === 'case' ? 'w-60' : "w-96"
+                        className={cn("relative bg-opacity-50 pointer-events-none w-96 _3:58:00_ ",
+                            `aspect-[${aspects.w}/${aspects.h}]`
                         )}
 
 
