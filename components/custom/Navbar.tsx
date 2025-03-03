@@ -4,6 +4,7 @@ import { Button, buttonVariants } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import ItemsOptions from "./ItemsOptionsDrawer";
+import { ThemeSwitch } from "./ThemeSwitch";
 // import { useState } from "react";
 
 interface pageProps {
@@ -19,11 +20,11 @@ const Navbar: React.FC<pageProps> = async () => {
     const isAdmin = user?.email === process.env.ADMIN_EMAIL;
 
     return (
-        <nav className='sticky z-[100] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all' >
+        <nav className='sticky z-[100] h-14 inset-x-0 top-0 w-full border-b border-gray-200 dark:border-slate-500 bg-white/75 dark:bg-slate-900  backdrop-blur-lg transition-all' >
 
 
             <MaxWidthWrapper >
-                <div className="flex h-14 items-center justify-between border-b border-zinc-200 ">
+                <div className="flex h-14 items-center justify-between border-b border-zinc-200 dark:border-slate-500 ">
                     <Link
                         href="/"
                         className="flex z-40 font-semibold"
@@ -33,6 +34,9 @@ const Navbar: React.FC<pageProps> = async () => {
 
 
                     <div className="h-full flex items-center space-x-4" >
+
+
+
                         {user
                             ?
                             <>
@@ -92,6 +96,8 @@ const Navbar: React.FC<pageProps> = async () => {
                                 />
                             </>
                         }
+
+                        <ThemeSwitch />
                     </div>
 
                 </div>

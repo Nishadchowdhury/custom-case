@@ -68,20 +68,20 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
             </Button>
         </DrawerTrigger>
 
-        <DrawerContent className="" >
+        <DrawerContent className=" border border-gray-200 dark:border-slate-500" >
             <DrawerHeader className="flex items-center flex-col" >
                 <DrawerTitle>Choose what you want to create</DrawerTitle>
                 <DrawerDescription>Card:- read the instructions.</DrawerDescription>
             </DrawerHeader>
 
-            <div className="mx-auto my-5 flex gap-4  " >
+            <div className="mx-auto my-5 flex gap-4 " >
                 <div
                     onClick={handleClose}
                 >
                     <Link href={"/configure/upload?type=card"}
                         className={buttonVariants({
                             variant: "ghost",
-                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col"
+                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col transition-all duration-300 hover:scale-[1.01]"
                         })}
                         onClick={handleClose}
                     >
@@ -128,7 +128,7 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
                     <Link href={"/configure/upload?type=case"}
                         className={buttonVariants({
                             variant: "ghost",
-                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col"
+                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col hover:scale-[1.01]"
                         })}
 
                     >

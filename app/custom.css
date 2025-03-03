@@ -2,6 +2,10 @@
   /* @apply transition-all; */
   /* outline: 1px red solid;
   outline-offset: -1px; */
+
+  /* Apply the animation to the element */
+
+  /* @apply transition-colors duration-300  */
 }
 
 .outline_red {
@@ -33,3 +37,4 @@
 .animate-fade-in {
   animation: fade-in 0.5s linear forwards;
 }
+

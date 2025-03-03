@@ -7,6 +7,7 @@ import Footer from "@/components/custom/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import Provider from "@/components/Providers/Provider";
 import { constructMetadata } from "../lib/utils";
+import { ThemeProvider } from "../components/Providers/theme-provider";
 
 const recursive = Recursive({ subsets: ["latin"] });
 
@@ -20,21 +21,28 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={recursive.className}>
-        <Navbar />
 
-        <main className="grainy-light flex flex-col min-h-[calc(100vh-3.5rem-1px)] " >
-          <div className="flex flex-1 flex-col h-full bg-gray-900_ " >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
 
-            <Provider>
-              {children}
-            </Provider>
+          <main className="bg-slate-50 dark:bg-secondary flex flex-col min-h-[calc(100vh-3.5rem-1px)] " >
+            <div className="flex flex-1 flex-col h-full bg-gray-900_ " >
 
-          </div>
-          <Footer />
-        </main>
+              <Provider>
+                {children}
+              </Provider>
 
-        <Toaster />
+            </div>
+            <Footer />
+          </main>
 
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

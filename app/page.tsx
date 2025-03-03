@@ -10,19 +10,20 @@ import { TextMorphUI } from "../components/ui/text-morph";
 import Card from "../components/custom/Card";
 
 export default function Home() {
+
   return (
 
-    <div className="bg-slate-50">
+    <div>
 
       {/*  */}
       <MaintenanceModal />
 
       <section>
         <MaxWidthWrapper
-          className="pb-24 pt-10 lg:grid lg:grid-cols-3 sm:pb-32 lg:gap-x-0 xl:gap-x-8 lg:pt-24 xl:pt-32 lg:pb-52"
+          className="pb-24 pt-10 lg:grid lg:grid-cols-3 sm:pb-32 lg:gap-x-0 xl:gap-x-8 lg:pt-24 xl:pt-32 lg:pb-52 bg-slate-50 dark:bg-secondary"
         >
 
-          <div className="col-span-2 px-6 lg:px-0 lg:pt-4 ">
+          <div className="col-span-2 px-6 lg:px-0 lg:pt-4  ">
 
             <div className="relative mx-auto text-center lg:text-left flex flex-col items-center lg:items-start">
               <div className="absolute w-28 left-0 -top-20 hidden lg:block">
@@ -30,9 +31,10 @@ export default function Home() {
               </div>
 
               <h1
-                className="relative w-fit tracking-tight text-balance mt-16 font-bold !leading-tight text-gray-900 text-5xl md:text-6xl lg:text-7xl"
+                className="relative w-fit tracking-tight text-balance mt-16 font-bold !leading-tight text-dynamic-white text-5xl md:text-6xl lg:text-7xl"
               >
-                Your Image on a <span className="bg-green-600 px-2 text-white ">Custom</span> <span> </span>
+                Your Image on a <span className="bg-green-600 text-white px-2  ">Custom</span> <span> </span>
+                <br className="block sm:hidden" />
                 <TextMorphUI
 
                   texts={['Phone case', "ATM card"]}
@@ -123,12 +125,13 @@ export default function Home() {
           <div className="col-span-full lg:col-span-1 w-full flex justify-center px-8 sm:px-16 md:px-0 mt-32 lg:mx-0 lg:mt-20 h-fit ">
 
             <div className="relative ">
-              <img src="/your-image.png" alt="" className="absolute w-40 lg:w-52 left-56 -top-20 select-none hidden sm:block lg:hidden xl:block" />
 
-              <img src="/line.png" className="absolute w-20 -left-6 -bottom-6 select-none" alt="" />
+              <img src="/your-image.png" alt="" className=" dark:invert absolute w-40 lg:w-52 left-56 -top-20 select-none hidden sm:block lg:hidden xl:block" />
+
+              <img src="/line.png" className=" dark:invert absolute w-20 -left-6 -bottom-6 select-none" alt="" />
 
               <Phone
-                className="w-64 "
+                className="w-64 dark:bg-secondary"
                 imgSrc="./testimonials/1.jpg"
               />
 
@@ -141,12 +144,12 @@ export default function Home() {
       </section>
 
       {/* value proposition section */}
-      <section className="bg-slate-100 py-24">
+      <section className="bg-slate-100 dark:bg-slate-950 py-24">
         <MaxWidthWrapper className="flex flex-col items-center gap-16 sm:gap-32" >
           <div className="flex flex-col lg:flex-row items-center gap-4 sm:gap-6">
 
             <h2
-              className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl text-gray-900 "
+              className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-5xl md:text-6xl text-dynamic-white "
             >
               What our
               <span className="relative px-2 text-green-600" >
@@ -192,7 +195,7 @@ export default function Home() {
                 <div className="flex flex-col ">
                   <p className="font-semibold">Jonathan</p>
 
-                  <div className="flex gap-1.5 items-center text-zinc-600" >
+                  <div className="flex gap-1.5 items-center text-dynamic-zinc " >
                     <Check className="h-4 w-4 stroke-[3px] text-green-600" />
                     <p className="text-sm">Verified Purchase</p>
                   </div>
@@ -232,7 +235,7 @@ export default function Home() {
                 <div className="flex flex-col ">
                   <p className="font-semibold">Josh</p>
 
-                  <div className="flex gap-1.5 items-center text-zinc-600" >
+                  <div className="flex gap-1.5 items-center text-dynamic-zinc" >
                     <Check className="h-4 w-4 stroke-[3px] text-green-600" />
                     <p className="text-sm">Verified Purchase</p>
                   </div>
@@ -255,14 +258,17 @@ export default function Home() {
 
       {/* _______________________________________________footer________________________________________________ */}
       <section >
-        <MaxWidthWrapper className="py-24">
+        <MaxWidthWrapper className="py-24 text-dynamic-white">
           <div className="mb-12 px-6 lg:px-8">
             <div className="mx-auto max-w-2xl sm:text-center ">
 
               <h2
-                className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-4xl sm:text-5xl md:text-6xl text-gray-900 "
+                className="order-1 mt-2 tracking-tight text-center text-balance !leading-tight font-bold text-4xl sm:text-5xl md:text-6xl  "
               >
-                Upload your photo and get <span className="relative px-2 mx-2 bg-green-600 text-white" > your own <TextMorphUI texts={["case", "card"]} /></span>now
+                Upload your photo and get <span className="relative px-2 mx-2 bg-green-600 text-white " > your own
+
+                  <br className="block sm:hidden" />
+                  <TextMorphUI texts={["case", "card"]} /></span>now
               </h2>
             </div>
           </div>
@@ -273,7 +279,7 @@ export default function Home() {
               <img
                 src="/arrow.png"
                 alt=""
-                className="absolute top-[25rem] md:top-1/2 -translate-y-1/2 z-10 left-1/2 -translate-x-1/2 rotate-90 md:rotate-0"
+                className="absolute dark:invert top-[25rem] md:top-1/2 -translate-y-1/2 z-10 left-1/2 -translate-x-1/2 rotate-90 md:rotate-0"
               />
               {/* abs img */}
 

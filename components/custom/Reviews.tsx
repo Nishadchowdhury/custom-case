@@ -39,7 +39,7 @@ const Reviews: React.FC = () => {
     return (
         <MaxWidthWrapper className="relative max-w-5xl">
             <img
-                className="absolute select-none hidden xl:block -left-32 top-1/3"
+                className="absolute select-none hidden dark:invert xl:block -left-32 top-1/3"
                 src="/what-people-are-buying.png"
                 alt=""
                 aria-hidden
@@ -117,8 +117,8 @@ function ReviewGrid() {
             </>
 
         }
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-100 " />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-100 " />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-100 dark:from-zinc-900 " />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-100 dark:from-zinc-900 " />
     </div>
 }
 
@@ -170,9 +170,10 @@ function Review({ imgSrc, className, ...props }: ReviewProps) {
 
     return (
         <div
-            className={cn("animate-fade-in rounded-[2.25rem] bg-white p-6 opacity-0 shadow-xl shadow-slate-900/5 ", className)}
+            className={cn("animate-fade-in rounded-[2.25rem] bg-white dark:bg-slate-800 p-6 opacity-0 shadow-xl shadow-slate-900/5 ", className)}
             style={{ animationDelay }}  // random animation delay
             {...props}>
+
             <Phone
                 imgSrc={imgSrc}
 
