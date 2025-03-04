@@ -81,10 +81,11 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
                     <Link href={"/configure/upload?type=card"}
                         className={buttonVariants({
                             variant: "ghost",
-                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col transition-all duration-300 hover:scale-[1.01]"
+                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col transition-all duration-300 hover:scale-[1.01] group "
                         })}
                         onClick={handleClose}
                     >
+
                         <svg
                             stroke="currentColor"
                             fill="currentColor"
@@ -93,7 +94,7 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
                             height="200" width="200"
                             xmlns="http://www.w3.org/2000/svg"
 
-                            className="text-primary"
+                            className="text-primary  [&_*]:transition-all "
                         >
                             <rect
                                 width="416"
@@ -106,6 +107,7 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
                                 strokeWidth="26"
                                 rx="56"
                                 ry="56"
+                                className=" group-hover:stroke-[22px] "
 
                             />
                             <path
@@ -113,6 +115,7 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
                                 strokeLinejoin="round"
                                 strokeWidth="30"
                                 d="M48 192h416M128 300h48v20h-48z"
+                                className="group-hover:stroke-[22px]"
                             />
                         </svg>
                         <span className="text-primary" >
@@ -128,15 +131,23 @@ const ItemsOptions: React.FC<pageProps> = ({ isOpen, setIsOpen, IsFromServerComp
                     <Link href={"/configure/upload?type=case"}
                         className={buttonVariants({
                             variant: "ghost",
-                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col hover:scale-[1.01]"
+                            className: "md:!size-48 !size-32 hover:bg-primary/10 border border-primary/40 flex flex-col hover:scale-[1.01] group"
                         })}
 
                     >
 
                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="200" width="200" xmlns="http://www.w3.org/2000/svg"
-                            className="text-primary"
-                        > <path d="M16.73 2.065H7.27a2.386 2.386 0 0 0-2.24 2.5v14.87a2.386 2.386 0 0 0 2.24 2.5h9.46a2.386 2.386 0 0 0 2.24-2.5V4.565a2.386 2.386 0 0 0-2.24-2.5Zm1.24 17.37a1.39 1.39 0 0 1-1.24 1.5H7.27a1.39 1.39 0 0 1-1.24-1.5V4.565a1.39 1.39 0 0 1 1.24-1.5H8.8v.51a1 1 0 0 0 1 1h4.4a1 1 0 0 0 1-1v-.51h1.53a1.39 1.39 0 0 1 1.24 1.5Z" stroke="none" />
-                            <path d="M10 18.934h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0 0 1Z" stroke="none" />
+                            className="text-primary  [&_*]:transition-all "
+                        >
+                            <path
+                                d="M16.73 2.065H7.27a2.386 2.386 0 0 0-2.24 2.5v14.87a2.386 2.386 0 0 0 2.24 2.5h9.46a2.386 2.386 0 0 0 2.24-2.5V4.565a2.386 2.386 0 0 0-2.24-2.5Zm1.24 17.37a1.39 1.39 0 0 1-1.24 1.5H7.27a1.39 1.39 0 0 1-1.24-1.5V4.565a1.39 1.39 0 0 1 1.24-1.5H8.8v.51a1 1 0 0 0 1 1h4.4a1 1 0 0 0 1-1v-.51h1.53a1.39 1.39 0 0 1 1.24 1.5Z"
+                                stroke="none"
+                            />
+                            <path
+                                d="M10 18.934h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0 0 1Z"
+                                stroke="none"
+                                className=" translate-y-[1px] group-hover:-translate-y-[0.5px] group-hover:opacity-20 "
+                            />
                         </svg>
 
 
