@@ -9,7 +9,6 @@ import {
 import { useState } from "react";
 import { cn } from "../../lib/utils";
 import { Check, Star, StarHalf } from "lucide-react";
-const cards = ["/cards/1.png", "/cards/2.png", "/cards/3.jpg", "/cards/4.jpg", "/cards/5.png", "/cards/6.jpg", "/cards/7.jpg", "/cards/8.png", "/cards/9.png"]
 
 interface pageProps {
 
@@ -22,8 +21,7 @@ const ReviewSliderModal: React.FC<pageProps> = () => {
         <Carousel className="w-full select-none"
             opts={{
                 loop: true,
-                align: "start"
-
+                align: "start",
             }}
             setIndex={setSnapped} // custom setter option that will pass the index of middle item.
         >

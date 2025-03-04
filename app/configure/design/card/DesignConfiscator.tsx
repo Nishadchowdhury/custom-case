@@ -682,10 +682,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                     alt="your Image"
                                     className="pointer-events-none"
 
-                                    style={{
-                                        filter: `blur(${blurValue / 5}px)`,
-
-                                    }}
+                                    style={{ filter: `blur(${blurValue / 5}px)  brightness(${brightnessValue}%)` }}
 
                                 />
                                     :
@@ -926,7 +923,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                             finish: options.finish.value,
                                             material: options.material.value,
                                             model: "atmcard"
-                                        }) 
+                                        })
                                     }}
                                 >
                                     Continue

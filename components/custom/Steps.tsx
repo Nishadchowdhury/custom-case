@@ -7,32 +7,31 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 const Steps: React.FC = () => {
 
-    const user = useKindeAuth().getUser()
+    const pathname = usePathname();
 
-    const searchParams = useSearchParams();
+    const type = pathname.split('/').pop(); //after splitting the text getting the last item
 
-    const type = searchParams.get("type") || ''
 
     const STEPS = [
         {
             name: "Step 1: Add image",
             description: `Choose an image for your ${type}`,
-            url: "/upload"
+            url: `/upload/${type}`
         },
         {
             name: "Step 2: Customize design",
             description: `Make the ${type} yours`,
-            url: "/design"
+            url: `/design/${type}`
         },
         {
             name: "Step 3: Summery",
             description: "Review your final design",
-            url: "/preview"
+            url: `/preview/${type}`
         },
     ]
 
 
-    const pathname = usePathname();
+
     return <ol className="rounded-md bg-white dark:bg-secondary bg-opacity-75 dark:bg-opacity-100 lg:flex lg:rounded-none lg:border-1 lg:border-x dark:border-0 lg:border-gray-200 text-dynamic-white ">
         {
 

@@ -32,6 +32,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
     const [showConfetti, setShowConfetti] = useState(false);
     useEffect(() => {
         setShowConfetti(true)
+        
     }, []);
 
 
@@ -49,6 +50,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
         onSuccess: ({ url }) => {
 
             navigator.clipboard.writeText("378282246310005");
+
             toast({
                 title: "A DEMO card number copied successfully!",
                 duration: 2000,
@@ -132,7 +134,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
                         </ol>
                     </div>
                 </div>
-                
+
                 <div className='mt-8 ' >
                     <div className='bg-gray-50 dark:bg-gray-300  p-6 sm:rounded-lg sm:p-8 ' >
                         <div className='flow-root text-sm ' >
@@ -149,7 +151,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
                                 <div className='flex items-center justify-between py-1 mt-2 ' >
                                     <p className='text-gray-600  ' >RAW antique finish </p>
                                     <p className='font-medium text-gray-900 ' >
-                                        {formatePrice(PRODUCTS_PRICES.finish.textured / 100)}
+                                        {formatePrice(PRODUCTS_PRICES.finish.antique / 100)}
                                     </p>
                                 </div>
                             ) : null}
@@ -158,7 +160,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
                                 <div className='flex items-center justify-between py-1 mt-2 ' >
                                     <p className='text-gray-600  ' >Stainless still material </p>
                                     <p className='font-medium text-gray-900 ' >
-                                        {formatePrice(PRODUCTS_PRICES.finish.textured / 100)}
+                                        {formatePrice(PRODUCTS_PRICES.material.stainlesssteel / 100)}
                                     </p>
                                 </div>
                             ) : null}

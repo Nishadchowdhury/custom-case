@@ -113,7 +113,7 @@ const ThankYou: React.FC<pageProps> = () => {
                 <div className="mt-10 border-t border-zinc-200 dark:border-opacity-50 ">
                     <div className="mt-10 flex flex-auto flex-col" >
                         <h4 className="font-semibold text-dynamic-white" >You made a grate choice!</h4>
-                        <p className="mt-2 text-sm text-zinc-600" >
+                        <p className="mt-2 text-sm text-dynamic-zinc" >
                             We at CaseCobra believe that <strong>{type === "case" ? "a phone case" : "an ATM card"}</strong> doesn't only need to look good, but also last you for the years to come. We offer a 5-year print guarantee: If your {type} isn't highest quality, <strong>we'll replace it for Free</strong>.
                         </p>
                     </div>
