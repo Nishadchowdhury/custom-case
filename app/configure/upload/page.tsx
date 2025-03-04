@@ -74,12 +74,12 @@ export default function Page() {
                     ?
                     <img
 
-                        className='absolute z-40 blur-md w-full bg-slate-300 opacity-50'
+                        className='absolute z-40 blur-md w-full bg-slate-300 dark:bg-slate-400 opacity-50'
                         src="/upload-bg-card.png"
                         alt="upload-bg-card bg"
 
                     />
-                    : null 
+                    : null
                     // <img
 
                     //     className='absolute z-40 blur-md w-full bg-slate-300 opacity- 50'
@@ -89,6 +89,9 @@ export default function Page() {
                     // />
 
                 }
+
+
+
 
                 <div className='relative z-50 flex flex-1 flex-col items-center justify-center w-full  '>
                     <Dropzone

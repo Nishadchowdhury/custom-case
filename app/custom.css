@@ -1,3 +1,6 @@
+:root {
+  --stripes-size: 110px;
+}
 * {
   /* @apply transition-all; */
   /* outline: 1px red solid;
@@ -6,6 +9,7 @@
   /* Apply the animation to the element */
 
   /* @apply transition-colors duration-300  */
+  
 }
 
 .outline_red {
@@ -34,7 +38,41 @@
   }
 }
 
+
+
 .animate-fade-in {
   animation: fade-in 0.5s linear forwards;
 }
 
+.strips {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 110%;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--first) 25%,
+      var(--first) 50%,
+      var(--second) 50%,
+      var(--second) 75%
+    );
+    background-size: 20px 20px;
+    animation: animate-strips 2s linear infinite;
+  }
+
+  
+}
+
+@keyframes animate-strips {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(20px * -1));
+  }
+}

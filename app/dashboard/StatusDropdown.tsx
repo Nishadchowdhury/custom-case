@@ -53,7 +53,7 @@ const StatusDropdown: React.FC<pageProps> = ({ id, orderStatus }) => {
                key={status}
                className={cn('flex text-sm gap-1 items-center p-2.5 cursor-default hover:bg-zinc-100',
                   {
-                     'bg-zinc-100': orderStatus === status
+                     'bg-zinc-100 dark:bg-zinc-700': orderStatus === status
                   }
                )}
                onClick={() => mutate({ id, newStatus: status as OrderStatus })} // whenever typescript ask for validation we need to cast the type.

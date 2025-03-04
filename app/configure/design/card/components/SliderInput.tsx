@@ -18,7 +18,7 @@ export function SliderInput({ value, setValue, defaultValue, max, message }: pag
 
     return (
         <div className='flex flex-col items-start gap-0'>
-            <div className='flex items-center '>{message && message} <div className='flex items-center ml-2' > <SlidingNumber value={value} />%</div> </div>
+            <div className='flex items-center text-black'>{message && message} <div className='flex items-center ml-2' > <SlidingNumber value={value} />%</div> </div>
 
             <div className='w-full grid grid-flow-row grid-cols-10 gap-2 ' >
 

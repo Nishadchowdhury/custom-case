@@ -8,7 +8,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 const Steps: React.FC = () => {
 
     const user = useKindeAuth().getUser()
-    
 
     const searchParams = useSearchParams();
 
@@ -34,7 +33,7 @@ const Steps: React.FC = () => {
 
 
     const pathname = usePathname();
-    return <ol className="rounded-md bg-white bg-opacity-75 lg:flex lg:rounded-none lg:border-1 lg:border-x lg:border-gray-200 ">
+    return <ol className="rounded-md bg-white dark:bg-secondary bg-opacity-75 dark:bg-opacity-100 lg:flex lg:rounded-none lg:border-1 lg:border-x dark:border-0 lg:border-gray-200 text-dynamic-white ">
         {
 
             STEPS.map((step, i) => {
@@ -47,8 +46,8 @@ const Steps: React.FC = () => {
                     className="relative overflow-hidden lg:flex-1 "
                 >
                     <div>
-                        <span className={cn('absolute left-0  h-full w-1 bg-zinc-400 lg:bottom-0 lg:h-1 lg:w-full ', {
-                            'bg-zinc-700': isCurrent,
+                        <span className={cn('absolute left-0  h-full w-1 bg-zinc-400 dark:bg-zinc-300 lg:bottom-0 lg:h-1 lg:w-full ', {
+                            'bg-zinc-700 dark:bg-zinc-400': isCurrent,
                             'bg-primary': isCompleted,
                             "lg:rounded-bl-sm": (i === 0),
                             "lg:rounded-br-sm": (i === 2),
@@ -76,14 +75,14 @@ const Steps: React.FC = () => {
                             <span
                                 className="ml-4 h-full mt-0.5 flex min-w-0 flex-col justify-center"
                             >
-                                <span className={cn('text-sm font-semibold text-zinc-700', {
+                                <span className={cn('text-sm font-semibold text-dynamic-white opacity-70', {
                                     'text-primary': isCompleted,
-                                    'text-zinc-700': isCurrent
+                                    'opacity-100 ': isCurrent
                                 })}>
                                     {step.name}
                                 </span>
                                 <span
-                                    className="text-sm text-zinc-500 "
+                                    className="text-sm text-dynamic-zinc "
                                 >
                                     {step.description}
                                 </span>
@@ -97,7 +96,7 @@ const Steps: React.FC = () => {
                                 className='absolute inset-0 hidden w-3 lg:block '
                             >
                                 <svg
-                                    className='h-full w-full text-gray-300'
+                                    className='h-full w-full text-gray-300 dark:text-zinc-600 '
                                     viewBox='0 0 12 82'
                                     fill='none'
                                     preserveAspectRatio='none'>

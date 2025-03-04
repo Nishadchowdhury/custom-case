@@ -35,11 +35,11 @@ interface pageProps {
 
 const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimensions, type = "case" }) => {
     const { startUpload, isUploading } = useUploadThing("imageUploader");
-
     const mounted = useMounted();
 
     const { toast } = useToast();
     const router = useRouter();
+
 
     const phoneCaseRef = useRef<HTMLDivElement>(null); // im keeping the same as it was, this will help me later to understand the doc later.
     const containerRef = useRef<HTMLDivElement>(null);
@@ -292,7 +292,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                 await new Promise((resolve, reject) => (chipPng.onload = resolve)) // waiting to load the image from the url into the userImage var.
                 // now the image is fully loaded and ready to be drawn into the canvas.
 
-                ctx.filter = `brightness(${brightnessValue}%) blur(${blurValue / 5}px) `
+                ctx.filter = `brightness(${brightnessValue}%) blur(${blurValue / 5}px)`
                 ctx?.drawImage(
                     chipPng,
                     actualX * 2, // calculated position from the visual elements
@@ -469,6 +469,12 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
         <Suspense
             fallback={<FallBackLoadingUi message="Please wait..." />}
         >
+            {/* <LoginModal
+                isOpen={loginModalOpen}
+                setIsOpen={setLoginModalOpen}
+                message="Please login to continue."
+                RedirectURL={document.location.href}
+            /> */}
             <div className='relative mt-20 grid grid-cols-1 lg:grid-cols-3 mb-20 pb-20 '>
                 <div
                     ref={containerRef}
@@ -708,7 +714,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
 
                         <div
-                            className="px-8 pb-12 pt-8"
+                            className="px-8 pb-12 pt-8 text-black bg-zinc-200"
                         >
                             <h2>Customize your Card</h2>
 
@@ -716,9 +722,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                 className="w-full h-px bg-zinc-200 my-6 "
                             />
 
-                            <div
-                                className="relative mt-4 h-full flex flex-col justify-between "
-                            >
+                            <div className="relative mt-4 h-full flex flex-col justify-between  " >
                                 <div className="flex flex-col gap-6 " >
 
                                     {/* colors options */}
@@ -833,7 +837,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                                                         }));
                                                     }}
                                                 >
-                                                    <Label>
+                                                    <Label className="text-black" >
                                                         {name.slice(0, 1).toUpperCase() + name.slice(1)} {/* making first latter capital by js */}
                                                     </Label>
                                                     <div className="mt-3 space-y-4" >
@@ -905,7 +909,7 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
                         <div className="h-px w-full bg-zinc-200  " />
                         <div className="w-full h-full flex justify-end items-center">
                             <div className="w-full flex gap-6 items-center ">
-                                <p className="font-medium whitespace-nowrap">
+                                <p className="font-medium whitespace-nowrap text-black">
                                     {formatePrice((BASE_PRICE + options.finish.price + options.material.price) / 100)}
                                 </p>
                                 <Button
@@ -915,13 +919,15 @@ const DesignConfiscator: React.FC<pageProps> = ({ configId, imageUrl, imageDimen
 
                                     size={"sm"}
                                     className="w-full"
-                                    onClick={() => saveConfig({
-                                        configId,
-                                        color: options.color.value,
-                                        finish: options.finish.value,
-                                        material: options.material.value,
-                                        model: "atmcard"
-                                    })}
+                                    onClick={() => {
+                                        return saveConfig({
+                                            configId,
+                                            color: options.color.value,
+                                            finish: options.finish.value,
+                                            material: options.material.value,
+                                            model: "atmcard"
+                                        }) 
+                                    }}
                                 >
                                     Continue
                                     <ArrowRight className="size-4 ml-1.5 inline " />

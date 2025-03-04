@@ -41,7 +41,7 @@ const ThankYou: React.FC<pageProps> = () => {
         return (
             <div className="w-full mt-24 flex justify-center" >
                 <div className="font-semibold text-2xl text-destructive">
-                    <p className="underline" >{error.message && "You need to logged in to access the privileges of the page! "}</p>
+                    <p className="underline" >{error?.message && "You need to logged in to access the privileges of the page! "}</p>
                     <div className="flex justify-center">
                         <LoginModal
                             isOpen={open}
@@ -96,7 +96,7 @@ const ThankYou: React.FC<pageProps> = () => {
     const totalPrice = (BASE_PRICE + ((finishPrice || 0) + (materialPrice || 0))) / 100
 
     return (
-        <div className='bg-white ' >
+        <div className='bg-white dark:bg-inherit ' >
             <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
                 <div className="max-w-xl ">
                     <p className="text-base font-medium text-primary" >Thank you!</p>
@@ -104,15 +104,15 @@ const ThankYou: React.FC<pageProps> = () => {
                     <p className="mt-2 text-base text-zinc-500" >{"We've"} received your order and are now</p>
 
                     <div className="mt-12 text-sm font-medium">
-                        <p className="text-zinc-900" >Order number:- </p>
+                        <p className="text-dynamic-white" >Order number:- </p>
                         <p className="mt-2 text-zinc-500" >{orderId}</p>
                     </div>
 
                 </div>
 
-                <div className="mt-10 border-t border-zinc-200 ">
+                <div className="mt-10 border-t border-zinc-200 dark:border-opacity-50 ">
                     <div className="mt-10 flex flex-auto flex-col" >
-                        <h4 className="font-semibold text-zinc-900" >You made a grate choice!</h4>
+                        <h4 className="font-semibold text-dynamic-white" >You made a grate choice!</h4>
                         <p className="mt-2 text-sm text-zinc-600" >
                             We at CaseCobra believe that <strong>{type === "case" ? "a phone case" : "an ATM card"}</strong> doesn't only need to look good, but also last you for the years to come. We offer a 5-year print guarantee: If your {type} isn't highest quality, <strong>we'll replace it for Free</strong>.
                         </p>
@@ -138,8 +138,8 @@ const ThankYou: React.FC<pageProps> = () => {
                 <div>
                     <div className="grid grid-cols-2 gap-x-6 py-10 text-sm" >
                         <div>
-                            <p className="font-medium text-gray-900 " >Shipping address</p>
-                            <div className="mt-2 text-zinc-700 " >
+                            <p className="font-medium text-dynamic-white" >Shipping address</p>
+                            <div className="mt-2 text-dynamic-zinc " >
                                 <address className="not-italic" >
                                     <span className="block">{ShippingAddress?.name}</span>
                                     <span className="block">{ShippingAddress?.street}</span>
@@ -149,43 +149,43 @@ const ThankYou: React.FC<pageProps> = () => {
                         </div>
 
                         <div>
-                            <p className="font-medium text-gray-900 " >Billing address</p>
-                            <div className="mt-2 text-zinc-700 " >
+                            <p className="font-medium text-dynamic-white " >Billing address</p>
+                            <div className="mt-2 text-dynamic-zinc" >
                                 <address className="not-italic" >
-                                    <span className="block">{BillingAddress?.name}</span>
-                                    <span className="block">{BillingAddress?.street}</span>
-                                    <span className="block">{BillingAddress?.postalCode} - {BillingAddress?.city}</span>
+                                    <span className="block ">{BillingAddress?.name}</span>
+                                    <span className="block ">{BillingAddress?.street}</span>
+                                    <span className="block ">{BillingAddress?.postalCode} - {BillingAddress?.city}</span>
                                 </address>
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-x-6 border-t border-zinc-200 py-10 text-sm" >
+                    <div className="grid grid-cols-2 gap-x-6 border-t border-zinc-200 dark:border-opacity-50 py-10 text-sm" >
                         <div className="">
-                            <p className="font-medium text-zinc-900 ">Payment status</p>
-                            <p className="mt-2 text-zinc-700 ">Paid</p>
+                            <p className="font-medium text-dynamic-white ">Payment status</p>
+                            <p className="mt-2 text-dynamic-zinc ">Paid</p>
                         </div>
 
                         <div className="">
-                            <p className="font-medium text-zinc-900 ">Shipping Method</p>
-                            <p className="mt-2 text-zinc-700 ">DHL, Takes up to 3 working days</p>
+                            <p className="font-medium text-dynamic-white ">Shipping Method</p>
+                            <p className="mt-2 text-dynamic-zinc ">DHL, Takes up to 3 working days</p>
                         </div>
                     </div>
 
                 </div>
 
-                <div className="space-y-6 border-t border-zinc-200 pt-10 text-sm  ">
+                <div className="space-y-6 border-t border-zinc-200 dark:border-opacity-50 pt-10 text-sm text-dynamic-white  ">
                     <div className="flex justify-between " >
-                        <p className="font-medium text-zinc-900" >Subtotal</p>
-                        <p className=" text-zinc-700" > {formatePrice(totalPrice)} </p>
+                        <p className="font-medium " >Subtotal</p>
+                        <p className="  text-dynamic-zinc" > {formatePrice(totalPrice)} </p>
                     </div>
                     <div className="flex justify-between " >
-                        <p className="font-medium text-zinc-900" >Shipping</p>
-                        <p className=" text-zinc-700" > {formatePrice(0)} </p>
+                        <p className="font-medium " >Shipping</p>
+                        <p className="  text-dynamic-zinc" > {formatePrice(0)} </p>
                     </div>
                     <div className="flex justify-between " >
-                        <p className="font-medium text-zinc-900" >Total</p>
-                        <p className=" text-zinc-700" > {formatePrice(totalPrice)} </p>
+                        <p className="font-medium " >Total</p>
+                        <p className="  text-dynamic-zinc" > {formatePrice(totalPrice)} </p>
                     </div>
                 </div>
 

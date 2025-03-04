@@ -1,6 +1,7 @@
+'use client'
 import NextImage from 'next/image';
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from "../ui/dialog";
 
 import {
     Carousel,
@@ -34,9 +35,12 @@ const CardSliderModal: React.FC = () => {
 
     return <Dialog defaultOpen >
         <DialogContent
-            className="absolute z-[9999999] w-11/12 rounded-md border-none pointer-events-none"
+            className="absolute z-[9999999] w-11/12 rounded-md border-none pointer-events-none dark:bg-slate-300"
         >
+            
             <DialogHeader>
+
+
 
                 <DialogTitle
                     className="text-md md:text-3xl text-center font-bold tracking-tight text-gray-900 "
@@ -54,9 +58,8 @@ const CardSliderModal: React.FC = () => {
 
             <div className="relative" >
 
-                <div className='absolute z-50 h-full w-14 pointer-events-none inset-y-0 -left-1 bg-gradient-to-r from-zinc-200 ' />
-
-                <div className='absolute z-50 h-full w-14 pointer-events-none inset-y-0 -right-1 bg-gradient-to-l from-zinc-200 ' />
+                <div className='absolute z-50 h-full w-14 pointer-events-none inset-y-0 -left-1 bg-gradient-to-r from-zinc-200 dark:from-slate-300 ' />
+                <div className='absolute z-50 h-full w-14 pointer-events-none inset-y-0 -right-1 bg-gradient-to-l from-zinc-200 dark:from-slate-300 ' />
 
                 <Carousel className="md:w-full w-10/12 z-40 mx-auto  select-none "
                     opts={{
@@ -102,8 +105,8 @@ const CardSliderModal: React.FC = () => {
                             )
                         })}
                     </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
+                    <CarouselPrevious className='dark:outline outline-primary outline-1 -outline-offset-1' />
+                    <CarouselNext className='dark:outline outline-primary outline-1 -outline-offset-1' />
                 </Carousel >
 
 

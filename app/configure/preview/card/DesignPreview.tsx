@@ -81,7 +81,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
     return <>
         <div
             aria-hidden
-            className='pointer-events-none select-none absolute inset-0 overflow-hidden flex justify-center '
+            className='pointer-events-none select-none absolute inset-0 overflow-hidden flex justify-center text-dynamic-white '
         >
             <Confetti
                 active={showConfetti}
@@ -105,7 +105,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
             </div>
 
             <div className="mt-6 sm:col-span-9 md:row-end-1 ">
-                <h3 className='text-3xl font-bold tracking-tight text-gray-900'> Your custom card</h3>
+                <h3 className='text-3xl font-bold tracking-tight '> Your custom card</h3>
                 <div className="mt-3 flex items-center gap-1.5 text-base ">
                     <Check className="h-4 w-4 text-green-500 " />
                     In stock and ready for shipment
@@ -113,31 +113,33 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
             </div>
 
             <div className="sm:col-span-12 md:col-span-9 text-base ">
-                <div className='grid grid-cols-1 gap-y-8 border-b border-gray-200 py-8 sm:grid-cols-2 sm:gap-x-6 sm:py-6 md:py-10'>
+                <div className='grid grid-cols-1 gap-y-8 border-b border-gray-200 dark:border-opacity-50 py-8 sm:grid-cols-2 sm:gap-x-6 sm:py-6 md:py-10'>
                     <div>
-                        <p className='font-medium text-zinc-950' >Highlights</p>
-                        <ol className='mt-3 text-zinc-700 list-disc list-inside'>
+                        <p className='font-medium ' >Highlights</p>
+                        <ol className='mt-3 text-dynamic-zinc opacity-70 list-disc list-inside'>
                             <li>Lite weight and stronger then topical </li>
                             <li>Anti scratching coating </li>
                             <li>Packaging made from recycled materials </li>
                             <li>5 years print warranty</li>
                         </ol>
                     </div>
+
                     <div>
-                        <p className='font-medium text-zinc-950 ' >Materials </p>
-                        <ol className='mt-3 text-zinc-700 list-disc list-inside' >
+                        <p className='font-medium ' >Materials </p>
+                        <ol className='mt-3 text-dynamic-zinc opacity-70 list-disc list-inside' >
                             <li>High-quality, durable material</li>
                             <li>Easy to replace the chip </li>
                         </ol>
                     </div>
                 </div>
-                <div className='mt-8' >
-                    <div className='bg-gray-50 p-6 sm:rounded-lg sm:p-8 ' >
+                
+                <div className='mt-8 ' >
+                    <div className='bg-gray-50 dark:bg-gray-300  p-6 sm:rounded-lg sm:p-8 ' >
                         <div className='flow-root text-sm ' >
                             <div
                                 className='flex items-center justify-between py-1 mt-2 '
                             >
-                                <p className='text-gray-600 ' >Base price</p>
+                                <p className=' text-gray-900' >Base price</p>
                                 <p className='font-medium text-gray-900'>
                                     {formatePrice((BASE_PRICE / 100))}
                                 </p>
@@ -163,7 +165,7 @@ const DesignPreview: React.FC<pageProps> = ({ configuration }) => {
 
                             <div className='my-2 h-px bg-gray-200' />
 
-                            <div className="flex items-center justify-between py-2" >
+                            <div className="flex items-center justify-between py-2 text-gray-900" >
                                 <p>Order total</p>
                                 <p className='font-semibold text-gray-900'>
                                     {formatePrice(totalPrice / 100)}
